@@ -16,10 +16,6 @@ Luxury_Wheels/
 │   │   ├── js/
 │   │   │   └── scripts.js
 │   │   ├── images/
-│   │   │   ├── yaris.jpg         # Exemplos de imagens de veículos
-│   │   │   ├── bmw_x5.jpg
-│   │   │   ├── harley.jpg
-│   │   │   └── README.txt
 │   │   └── README.txt
 │   └── README.txt
 │
