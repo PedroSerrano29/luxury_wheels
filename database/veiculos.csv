@@ -1,0 +1,41 @@
+marca,modelo,matricula,combustivel,categoria,transmissao,tipo,lugares,imagem,diaria,disponivel,ultima_revisao,proxima_revisao,ultima_inspecao
+BMW,Series 3,AA-12-BB,Gasolina,Berline,Automática,Automóvel,5,bmw_series3.jpg,85.00,TRUE,2024-08-10,2025-08-10,2024-07-01
+BMW,Series 1,AB-13-BC,Gasóleo,Compacto,Manual,Automóvel,5,bmw_series1.jpg,65.00,TRUE,2024-06-20,2025-06-20,2024-05-15
+Mercedes,C-Class,AC-14-BD,Gasóleo,Berline,Automática,Automóvel,5,mercedes_cclass.jpg,90.00,TRUE,2024-07-15,2025-07-15,2024-06-20
+Mercedes,A-Class,AD-15-BE,Híbrido,Compacto,Manual,Automóvel,5,mercedes_aclass.jpg,75.00,FALSE,2024-06-01,2025-06-01,2024-05-01
+Audi,A4,AE-16-BF,Híbrido,Berline,Manual,Automóvel,5,audi_a4.jpg,88.00,TRUE,2024-08-05,2025-08-05,2024-07-10
+Audi,A3,AF-17-BG,Gasóleo,Compacto,Manual,Automóvel,5,audi_a3.jpg,70.00,TRUE,2024-05-25,2025-05-25,2024-04-30
+Volkswagen,Golf,AG-18-BH,Gasóleo,Compacto,Manual,Automóvel,5,vw_golf.jpg,68.00,FALSE,2024-07-10,2025-07-10,2024-06-05
+Volkswagen,Passat,AH-19-BI,Gasolina,Berline,Automática,Automóvel,5,vw_passat.jpg,82.00,TRUE,2024-06-30,2025-06-30,2024-05-25
+Peugeot,308,AI-20-BJ,Gasóleo,Compacto,Manual,Automóvel,5,peugeot_308.jpg,65.00,TRUE,2024-07-01,2025-07-01,2024-06-01
+Peugeot,508,AJ-21-BK,Híbrido,Berline,Automática,Automóvel,5,peugeot_508.jpg,78.00,TRUE,2024-08-01,2025-08-01,2024-07-01
+Renault,Megane,AK-22-BL,Gasolina,Compacto,Manual,Automóvel,5,renault_megane.jpg,60.00,TRUE,2024-07-10,2025-07-10,2024-06-10
+Renault,Talisman,AL-23-BM,Gasóleo,Berline,Automática,Automóvel,5,renault_talisman.jpg,75.00,TRUE,2024-06-15,2025-06-15,2024-05-20
+Toyota,Yaris,AM-24-BN,Híbrido,Citadino,Automática,Automóvel,5,toyota_yaris.jpg,55.00,TRUE,2024-05-10,2025-05-10,2024-04-15
+Toyota,Corolla,AN-25-BO,Híbrido,Berline,Automática,Automóvel,5,toyota_corolla.jpg,70.00,FALSE,2024-06-10,2025-06-10,2024-05-15
+Tesla,Model 3,AO-26-BP,Elétrico,Berline,Automática,Automóvel,5,tesla_model3.jpg,95.00,TRUE,2024-07-20,2025-07-20,2024-06-25
+Tesla,Model Y,AP-27-BQ,Elétrico,SUV,Automática,Automóvel,5,tesla_modely.jpg,100.00,TRUE,2024-08-01,2025-08-01,2024-07-01
+Fiat,500,AQ-28-BR,Gasolina,Citadino,Manual,Automóvel,4,fiat_500.jpg,48.00,TRUE,2024-06-01,2025-06-01,2024-05-01
+Fiat,Panda,AR-29-BS,Gasolina,Citadino,Manual,Automóvel,4,fiat_panda.jpg,45.00,TRUE,2024-05-15,2025-05-15,2024-04-20
+Ford,Focus,AS-30-BT,Gasóleo,Compacto,Manual,Automóvel,5,ford_focus.jpg,63.00,FALSE,2024-07-05,2025-07-05,2024-06-01
+Ford,Mondeo,AT-31-BU,Gasóleo,Berline,Automática,Automóvel,5,ford_mondeo.jpg,77.00,TRUE,2024-08-01,2025-08-01,2024-07-01
+Opel,Astra,AU-32-BV,Gasóleo,Compacto,Manual,Automóvel,5,opel_astra.jpg,60.00,TRUE,2024-06-10,2025-06-10,2024-05-15
+Opel,Corsa,AV-33-BW,Gasolina,Citadino,Manual,Automóvel,5,opel_corsa.jpg,52.00,TRUE,2024-05-20,2025-05-20,2024-04-25
+Seat,Leon,AW-34-BX,Gasóleo,Compacto,Manual,Automóvel,5,seat_leon.jpg,64.00,TRUE,2024-06-15,2025-06-15,2024-05-10
+Seat,Ibiza,AX-35-BY,Gasolina,Citadino,Manual,Automóvel,5,seat_ibiza.jpg,50.00,FALSE,2024-07-01,2025-07-01,2024-06-01
+Kia,Ceed,AY-36-BZ,Gasóleo,Compacto,Manual,Automóvel,5,kia_ceed.jpg,62.00,TRUE,2024-06-20,2025-06-20,2024-05-20
+Kia,Picanto,AZ-37-CA,Gasolina,Citadino,Manual,Automóvel,4,kia_picanto.jpg,45.00,TRUE,2024-05-10,2025-05-10,2024-04-10
+Hyundai,i20,BA-38-CB,Gasolina,Citadino,Manual,Automóvel,5,hyundai_i20.jpg,50.00,TRUE,2024-06-01,2025-06-01,2024-05-01
+Hyundai,i30,BB-39-CC,Gasóleo,Compacto,Manual,Automóvel,5,hyundai_i30.jpg,60.00,TRUE,2024-07-01,2025-07-01,2024-06-01
+Citroën,C3,BC-40-CD,Gasolina,Citadino,Manual,Automóvel,5,citroen_c3.jpg,52.00,TRUE,2024-05-15,2025-05-15,2024-04-15
+Citroën,C5 Aircross,BD-41-CE,Híbrido,SUV,Automática,Automóvel,5,citroen_c5.jpg,80.00,TRUE,2024-06-10,2025-06-10,2024-05-10
+Yamaha,MT-07,BE-42-CF,Gasolina,Moto,N/A,Moto,2,yamaha_mt07.jpg,40.00,TRUE,2024-05-01,2025-05-01,2024-04-01
+Yamaha,XMAX 300,BF-43-CG,Gasolina,Scooter,N/A,Moto,2,yamaha_xmax.jpg,35.00,TRUE,2024-06-01,2025-06-01,2024-05-01
+Honda,CB500F,BG-44-CH,Gasolina,Naked,N/A,Moto,2,honda_cb500f.jpg,38.00,TRUE,2024-05-15,2025-05-15,2024-04-15
+Honda,PCX 125,BH-45-CI,Gasolina,Scooter,N/A,Moto,2,honda_pcx125.jpg,30.00,FALSE,2024-07-01,2025-07-01,2024-06-01
+Kawasaki,Z650,BI-46-CJ,Gasolina,Naked,N/A,Moto,2,kawasaki_z650.jpg,42.00,TRUE,2024-06-10,2025-06-10,2024-05-10
+Kawasaki,Versys 650,BJ-47-CK,Gasolina,Touring,N/A,Moto,2,kawasaki_versys.jpg,45.00,TRUE,2024-05-05,2025-05-05,2024-04-05
+Suzuki,SV650,BK-48-CL,Gasolina,Naked,N/A,Moto,2,suzuki_sv650.jpg,39.00,TRUE,2024-07-01,2025-07-01,2024-06-01
+Suzuki,Burgman 400,BL-49-CM,Gasolina,Scooter,N/A,Moto,2,suzuki_burgman.jpg,37.00,TRUE,2024-06-15,2025-06-15,2024-05-15
+BMW,F 900 R,BM-50-CN,Gasolina,Naked,N/A,Moto,2,bmw_f900r.jpg,50.00,TRUE,2024-08-01,2025-08-01,2024-07-01
+BMW,C 400 X,BN-51-CO,Gasolina,Scooter,N/A,Moto,2,bmw_c400x.jpg,42.00,TRUE,2024-07-10,2025-07-10,2024-06-10

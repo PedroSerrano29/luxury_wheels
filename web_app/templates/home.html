@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Luxury Wheels - Veículos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Catálogo de Veículos</h1>
+
+    <form method="get">
+        <label>Categoria:
+            <select name="categoria">
+                <option value="">-- Todas --</option>
+                <option value="SUV">SUV</option>
+                <option value="Compacto">Compacto</option>
+                <option value="Moto">Moto</option>
+                <!-- Adiciona mais categorias conforme necessário -->
+            </select>
+        </label>
+
+        <label>Transmissão:
+            <select name="transmissao">
+                <option value="">-- Todas --</option>
+                <option value="Manual">Manual</option>
+                <option value="Automática">Automática</option>
+            </select>
+        </label>
+
+        <label>Tipo:
+            <select name="tipo">
+                <option value="">-- Todos --</option>
+                <option value="Carro">Carro</option>
+                <option value="Moto">Moto</option>
+                <!-- Adiciona mais tipos -->
+            </select>
+        </label>
+
+        <label>Lugares:
+            <select name="lugares">
+                <option value="">-- Todos --</option>
+                <option value="1-4">1-4</option>
+                <option value="5-6">5-6</option>
+                <option value="7+">7+</option>
+            </select>
+        </label>
+
+        <label>Data Início:
+            <input type="date" name="data_inicio" value="{{ request.args.get('data_inicio', '') }}">
+        </label>
+
+        <label>Data Fim:
+            <input type="date" name="data_fim" value="{{ request.args.get('data_fim', '') }}">
+        </label>
+
+        <button type="submit">Filtrar</button>
+    </form>
+
+    <div class="grid">
+        {% for v in veiculos %}
+            <div class="card {% if v.indisponivel %}indisponivel{% endif %}">
+                <img src="{{ url_for('static', filename='images/' + v.imagem) }}" alt="{{ v.marca }} {{ v.modelo }}">
+                <h3>{{ v.marca }} {{ v.modelo }}</h3>
+                <p><strong>Categoria:</strong> {{ v.categoria }}</p>
+                <p><strong>Transmissão:</strong> {{ v.transmissao }}</p>
+                <p><strong>Tipo:</strong> {{ v.tipo }}</p>
+                <p><strong>Lugares:</strong> {{ v.lugares }}</p>
+                <p><strong>Valor diária:</strong> €{{ "%.2f"|format(v.valor_diaria) }}</p>
+
+                {% if v.indisponivel %}
+                    <p class="alerta">Indisponível</p>
+                    <ul class="alerta">
+                        {% for motivo in v.motivos %}
+                            <li>{{ motivo }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
