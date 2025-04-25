@@ -6,7 +6,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Catálogo de Veículos</h1>
+    <header>
+        <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="Logo" class="logo">
+        <h1>Luxury Wheels</h1>
+        <div class="auth-buttons">
+            <a href="#">Login</a>
+            <a href="#">Registar-se</a>
+        </div>
+    </header>
 
     <form method="get">
         <label>Categoria:
@@ -15,7 +22,16 @@
                 <option value="SUV">SUV</option>
                 <option value="Compacto">Compacto</option>
                 <option value="Moto">Moto</option>
-                <!-- Adiciona mais categorias conforme necessário -->
+            </select>
+        </label>
+
+        <label>Combustivel:
+            <select name="combustivel">
+                <option value="">-- Todos --</option>
+                <option value="Gasolina">Gasolina</option>
+                <option value="Gasóleo">Diesel</option>
+                <option value="Híbrido">Hibrido</option>
+                <option value="Elétrico">Elétrico</option>
             </select>
         </label>
 
@@ -32,7 +48,6 @@
                 <option value="">-- Todos --</option>
                 <option value="Carro">Carro</option>
                 <option value="Moto">Moto</option>
-                <!-- Adiciona mais tipos -->
             </select>
         </label>
 
@@ -74,6 +89,11 @@
                             <li>{{ motivo }}</li>
                         {% endfor %}
                     </ul>
+                {% endif %}
+
+                <!-- Botão de Reservar -->
+                {% if not v.indisponivel %}
+                    <button class="reservar">Reservar</button>
                 {% endif %}
             </div>
         {% endfor %}

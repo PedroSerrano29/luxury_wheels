@@ -1,14 +1,44 @@
-from flask import request, render_template
+from flask import Flask, request, render_template
 from datetime import datetime, timedelta
-from setup_database import Veiculo, Reserva, Session
 from sqlalchemy import or_, and_
+from flask_login import LoginManager
+from database.setup_database import Cliente
+from web_app.auth.routes import auth_bp
+from web_app.auth.utils import mail
 
+# Adiciona o path do projeto
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Importa os modelos e sessão
+from database.setup_database import Veiculo, Reserva, session
+
+# Cria a app Flask
+app = Flask(__name__)
+
+# Login Manager
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+login_manager.init_app(app)
+
+# Regista o blueprint de autenticação
+app.register_blueprint(auth_bp)
+
+# Define como carregar o utilizador
+@login_manager.user_loader
+def load_user(user_id):
+    return session.query(Cliente).get(int(user_id))
+
+@app.route('/')
 def home():
     query = session.query(Veiculo)
 
     # Filtros via GET
     categoria = request.args.get('categoria')
+    combustivel = request.args.get('combustivel')
     transmissao = request.args.get('transmissao')
+
     tipo = request.args.get('tipo')
     lugares = request.args.get('lugares')
     data_inicio = request.args.get('data_inicio')
@@ -16,6 +46,8 @@ def home():
 
     if categoria:
         query = query.filter_by(categoria=categoria)
+    if combustivel:
+        query = query.filter_by(combustivel=combustivel)
     if transmissao:
         query = query.filter_by(transmissao=transmissao)
     if tipo:
@@ -41,15 +73,15 @@ def home():
         # Verificações de disponibilidade
         if not veiculo.disponivel:
             indisponivel = True
-            motivos.append('Disponibilidade desativada')
+            # motivos.append('Disponibilidade desativada')
 
         if veiculo.ultima_inspecao and veiculo.ultima_inspecao < um_ano_atras:
             indisponivel = True
-            motivos.append('Inspeção fora de validade')
+            # motivos.append('Inspeção fora de validade')
 
         if veiculo.proxima_revisao and veiculo.proxima_revisao <= hoje:
             indisponivel = True
-            motivos.append('Revisão expirada')
+            # motivos.append('Revisão expirada')
 
         # Verifica conflitos com reservas
         if data_inicio and data_fim:
@@ -65,7 +97,7 @@ def home():
 
                 if reservas_existentes:
                     indisponivel = True
-                    motivos.append('Reservado no período selecionado')
+                    # motivos.append('Reservado no período selecionado')
             except ValueError:
                 pass  # Ignora datas mal formatadas
 
@@ -84,3 +116,17 @@ def home():
         })
 
     return render_template('home.html', veiculos=veiculos_info)
+
+# Configurações do email
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'luxurywheelspedroserrano@gmail.com'
+app.config['MAIL_PASSWORD'] = 'luxurywheelspedroserrano29'
+app.config['MAIL_DEFAULT_SENDER'] = 'luxurywheelspedroserrano@gmail.com'
+
+mail.init_app(app)
+
+# Inicia o servidor Flask
+if __name__ == '__main__':
+    app.run(debug=True)

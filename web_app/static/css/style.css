@@ -1,12 +1,53 @@
 body {
     font-family: Arial, sans-serif;
-    padding: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #000000;
+    color: rgb(230, 176, 0);
+    padding: 10px 20px;
+}
+
+header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+header .logo {
+    width: 70px; /* Ajuste o tamanho do logo conforme necessário */
+    height: auto;
+}
+
+header .auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+header .auth-buttons a {
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+header .auth-buttons a:hover {
+    background-color: #0056b3;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    width: 75%;  /* Ajusta a largura da grelha */
+    margin-left: 350px;  /* Mover a grelha mais para a direita, para evitar sobreposição com os filtros */
+    margin-top: 30px;  /* Espaço superior para não ficar em cima da barra de filtros */
 }
 
 .card {
@@ -19,12 +60,12 @@ body {
 }
 
 .card img {
-    max-width: 100%;
-    height: auto;
+    width: 250px;
+    height: 150px;
+    object-fit: cover;
     border-radius: 8px;
 }
 
-/* Estilo para veículos indisponíveis */
 .card.indisponivel {
     opacity: 0.5;
     pointer-events: none;
@@ -34,8 +75,68 @@ body {
     filter: grayscale(100%);
 }
 
-/* Alerta de indisponibilidade */
 .alerta {
     color: red;
     font-weight: bold;
+}
+
+
+/* Estilização do botão de reservar */
+.reservar {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.reservar:hover {
+    background-color: #218838;
+}
+
+
+/* Barra de filtros à esquerda */
+form {
+    position: fixed;
+    top: 100px;  /* Mover um pouco mais para baixo para não sobrepor o logo */
+    left: 20px;
+    width: 250px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 10px #eee;
+    border-radius: 8px;
+    z-index: 10;
+}
+
+form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+form select, form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+form button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #0056b3;
 }

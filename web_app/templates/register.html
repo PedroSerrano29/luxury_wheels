@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Registo - Luxury Wheels</title>
+</head>
+<body>
+    <h2>Criação de Conta</h2>
+    <form method="POST">
+        <label>Primeiro Nome:
+            <input type="text" name="primeiro_nome" required>
+        </label><br>
+        <label>Último Nome:
+            <input type="text" name="ultimo_nome" required>
+        </label><br>
+        <label>Email:
+            <input type="email" name="email" required>
+        </label><br>
+        <label>Password:
+            <input type="password" name="senha" required>
+        </label><br>
+        <label>Confirmar Password:
+            <input type="password" name="confirmar" required>
+        </label><br>
+        <button type="submit">Registar</button>
+    </form>
+    <p><a href="{{ url_for('auth.login') }}">Já tem conta? Entrar</a></p>
+</body>
+</html>
