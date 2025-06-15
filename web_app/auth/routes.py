@@ -9,7 +9,7 @@ import random
 import string
 from werkzeug.security import generate_password_hash
 
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -65,7 +65,7 @@ def register():
 
     return render_template('register.html')
 
-@auth_bp.route('/recuperar', methods=['GET', 'POST'])
+@auth_bp.route('/recuperar-password', methods=['GET', 'POST'])
 def recuperar_password():
     if request.method == 'POST':
         email = request.form['email']
@@ -90,4 +90,4 @@ def recuperar_password():
         flash("Foi enviada uma nova password para o seu email.", "success")
         return redirect(url_for('auth.login'))
 
-    return render_template('recuperar.html')
+    return render_template('recuperar_password.html')

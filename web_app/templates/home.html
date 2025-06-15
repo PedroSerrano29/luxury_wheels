@@ -7,11 +7,11 @@
 </head>
 <body>
     <header>
-        <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="Logo" class="logo">
+        <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="Logo Luxury Wheels" class="logo">
         <h1>Luxury Wheels</h1>
         <div class="auth-buttons">
-            <a href="#">Login</a>
-            <a href="#">Registar-se</a>
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('auth.register') }}">Registar-se</a>
         </div>
     </header>
 
@@ -25,12 +25,12 @@
             </select>
         </label>
 
-        <label>Combustivel:
+        <label>Combustível:
             <select name="combustivel">
                 <option value="">-- Todos --</option>
                 <option value="Gasolina">Gasolina</option>
                 <option value="Gasóleo">Diesel</option>
-                <option value="Híbrido">Hibrido</option>
+                <option value="Híbrido">Híbrido</option>
                 <option value="Elétrico">Elétrico</option>
             </select>
         </label>
@@ -74,7 +74,7 @@
     <div class="grid">
         {% for v in veiculos %}
             <div class="card {% if v.indisponivel %}indisponivel{% endif %}">
-                <img src="{{ url_for('static', filename='images/' + v.imagem) }}" alt="{{ v.marca }} {{ v.modelo }}">
+                <img src="{{ url_for('static', filename='images/' + v.imagem) }}" alt="Imagem de {{ v.marca }} {{ v.modelo }}">
                 <h3>{{ v.marca }} {{ v.modelo }}</h3>
                 <p><strong>Categoria:</strong> {{ v.categoria }}</p>
                 <p><strong>Transmissão:</strong> {{ v.transmissao }}</p>
@@ -83,20 +83,22 @@
                 <p><strong>Valor diária:</strong> €{{ "%.2f"|format(v.valor_diaria) }}</p>
 
                 {% if v.indisponivel %}
-                    <p class="alerta">Indisponível</p>
-                    <ul class="alerta">
-                        {% for motivo in v.motivos %}
-                            <li>{{ motivo }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-
-                <!-- Botão de Reservar -->
-                {% if not v.indisponivel %}
+                    <button class="indisponivel-btn" disabled>Indisponível</button>
+                {% else %}
                     <button class="reservar">Reservar</button>
                 {% endif %}
             </div>
         {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% if page > 1 %}
+            <a href="{{ url_for('home', page=page-1) }}">Anterior</a>
+        {% endif %}
+        <span>Página {{ page }}</span>
+        {% if total > page * per_page %}
+            <a href="{{ url_for('home', page=page+1) }}">Próxima</a>
+        {% endif %}
     </div>
 </body>
 </html>

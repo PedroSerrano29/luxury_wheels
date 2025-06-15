@@ -2,28 +2,43 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Registo - Luxury Wheels</title>
+    <title>Registar-se - Luxury Wheels</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h2>Criação de Conta</h2>
-    <form method="POST">
-        <label>Primeiro Nome:
-            <input type="text" name="primeiro_nome" required>
-        </label><br>
-        <label>Último Nome:
-            <input type="text" name="ultimo_nome" required>
-        </label><br>
-        <label>Email:
-            <input type="email" name="email" required>
-        </label><br>
-        <label>Password:
-            <input type="password" name="senha" required>
-        </label><br>
-        <label>Confirmar Password:
-            <input type="password" name="confirmar" required>
-        </label><br>
-        <button type="submit">Registar</button>
-    </form>
-    <p><a href="{{ url_for('auth.login') }}">Já tem conta? Entrar</a></p>
+    <header>
+        <a href="{{ url_for('home') }}">
+            <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="Logo Luxury Wheels" class="logo">
+        </a>
+        <h1>Luxury Wheels</h1>
+        <div class="auth-buttons">
+            <a href="{{ url_for('auth.login') }}">Login</a>
+            <a href="{{ url_for('auth.register') }}">Registar-se</a>
+        </div>
+    </header>
+    <div class="register-container">
+        <h2>Criação de Conta</h2>
+        <form class="register-form" method="post">
+            <label for="primeiro_nome">Primeiro Nome</label>
+            <input type="text" id="primeiro_nome" name="primeiro_nome" required>
+
+            <label for="ultimo_nome">Último Nome</label>
+            <input type="text" id="ultimo_nome" name="ultimo_nome" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" required>
+
+            <label for="confirmar">Confirmar Senha</label>
+            <input type="password" id="confirmar" name="confirmar" required>
+
+            <button type="submit">Registar</button>
+        </form>
+        <p style="text-align:center; margin-top:15px;">
+            <a href="{{ url_for('auth.login') }}">Já tem conta? Entrar</a>
+        </p>
+    </div>
 </body>
 </html>
