@@ -13,19 +13,17 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    erro = None
     if request.method == 'POST':
         email = request.form['email']
         senha = request.form['senha']
-        
-        cliente = session.query(Cliente).filter_by(email=email).first()
-        if cliente and check_password_hash(cliente.senha, senha):
-            login_user(cliente)
-            flash('Login efetuado com sucesso!', 'success')
+        user = session.query(Cliente).filter_by(email=email).first()
+        if user and user.check_password(senha):
+            login_user(user)
             return redirect(url_for('home'))
         else:
-            flash('Email ou senha incorretos.', 'danger')
-
-    return render_template('login.html')
+            erro = "Utilizador ou password incorrectos"
+    return render_template('login.html', erro=erro)
 
 
 

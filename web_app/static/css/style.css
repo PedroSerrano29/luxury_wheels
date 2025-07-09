@@ -194,6 +194,28 @@ select {
     font-size: 14px;
 }
 
+/* User Circle */
+.user-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #007bff;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.3em;
+    text-decoration: none;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background 0.2s;
+}
+
+.user-circle:hover {
+    background: #0056b3;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
     header {

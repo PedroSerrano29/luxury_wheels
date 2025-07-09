@@ -10,8 +10,14 @@
         <img src="{{ url_for('static', filename='images/default.jpg') }}" alt="Logo Luxury Wheels" class="logo">
         <h1>Luxury Wheels</h1>
         <div class="auth-buttons">
-            <a href="{{ url_for('auth.login') }}">Login</a>
-            <a href="{{ url_for('auth.register') }}">Registar-se</a>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('auth.perfil') }}" class="user-circle">
+                    {{ current_user.primeiro_nome[0] }}{{ current_user.ultimo_nome[0] }}
+                </a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Login</a>
+                <a href="{{ url_for('auth.register') }}">Registar-se</a>
+            {% endif %}
         </div>
     </header>
 
@@ -100,5 +106,7 @@
             <a href="{{ url_for('home', page=page+1) }}">Próxima</a>
         {% endif %}
     </div>
+
+    <script src="{{ url_for('static', filename='js/home_interactions.js') }}"></script>
 </body>
 </html>
