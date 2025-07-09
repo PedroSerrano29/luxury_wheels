@@ -1,17 +1,19 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import os
+import sys
 
-# Caminho relativo para a base de dados
-db_path = os.path.join(os.path.dirname(__file__), '../database/luxury_wheels.db')
+# Caminho absoluto para a base de dados
+db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'luxury_wheels.db'))
 engine = create_engine(f'sqlite:///{db_path}')
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Importar as classes do arquivo principal
+# Adiciona o diretório da base do projeto ao sys.path
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
 from setup_database import Veiculo, Cliente, Reserva, FormaPagamento
 
-# Função para limpar o conteúdo das tabelas
 def limpar_tabelas():
     session.query(Veiculo).delete()
     session.query(Cliente).delete()
@@ -19,7 +21,5 @@ def limpar_tabelas():
     session.query(FormaPagamento).delete()
     session.commit()
 
-# Chamar a função para limpar as tabelas
 limpar_tabelas()
-
 print("Conteúdo das tabelas foi limpo com sucesso.")

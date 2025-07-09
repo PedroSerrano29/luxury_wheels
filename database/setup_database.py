@@ -1,9 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, Date, ForeignKey
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
-
+from sqlalchemy.orm import declarative_base, sessionmaker
+import hashlib
 import os
 
 Base = declarative_base()
@@ -34,11 +31,26 @@ class Cliente(Base):
     email = Column(String, nullable=False, unique=True)
     senha = Column(String, nullable=False)
 
+    # Para usar werkzeug.security, descomente as linhas abaixo:
+    # def set_password(self, password):
+    #     self.senha = generate_password_hash(password)
+    #
+    # def check_password(self, password):
+    #     return check_password_hash(self.senha, password)
+
+    # Para usar hashlib (sem werkzeug.security), use as funções abaixo:
     def set_password(self, password):
-        self.senha = generate_password_hash(password)
+        salt = os.urandom(16).hex()
+        pwd_hash = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000).hex()
+        self.senha = f"{salt}${pwd_hash}"
 
     def check_password(self, password):
-        return check_password_hash(self.senha, password)
+        try:
+            salt, pwd_hash = self.senha.split('$')
+            check_hash = hashlib.pbkdf2_hmac('sha256', password.encode(), salt.encode(), 100000).hex()
+            return check_hash == pwd_hash
+        except Exception:
+            return False
 
 
 class Reserva(Base):

@@ -20,6 +20,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # Create Flask app
 app = Flask(__name__)
 
+# Adiciona esta linha logo após criar a app
+app.secret_key = os.getenv('SECRET_KEY')
+
 # Configure app
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 587))
@@ -28,7 +31,7 @@ app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
-# Initialize mail
+# Initialize mail (apenas uma vez)
 mail = Mail(app)
 
 # Initialize extensions
