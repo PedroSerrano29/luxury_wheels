@@ -21,3 +21,10 @@ CREATE TABLE clientes (
     password_hash TEXT NOT NULL,
     data_registo TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE formas_pagamento (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cliente_id INTEGER NOT NULL,
+    tipo TEXT NOT NULL,
+    detalhes TEXT,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
