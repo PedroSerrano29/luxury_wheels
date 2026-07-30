@@ -1,4 +1,0 @@
-flask
-sqlalchemy
-flask-dance
-psycopg2-binary
