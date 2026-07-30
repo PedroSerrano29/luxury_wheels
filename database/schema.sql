@@ -24,7 +24,21 @@ CREATE TABLE clientes (
 CREATE TABLE formas_pagamento (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cliente_id INTEGER NOT NULL,
-    tipo TEXT NOT NULL,
+    tipo TEXT NOT NULL,        -- 'MB WAY', 'Cartão'
     detalhes TEXT,
     FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+CREATE TABLE reservas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cliente_id INTEGER NOT NULL,
+    veiculo_id INTEGER NOT NULL,
+    data_inicio TEXT NOT NULL,
+    data_fim TEXT NOT NULL ,
+    valor_total REAL NOT NULL,
+    forma_pagamento_id INTEGER NOT NULL,
+    estado TEXT NOT NULL DEFAULT 'Ativa',      -- 'Ativa','Cancelada','Concluída'
+    data_criacao TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+    FOREIGN KEY (veiculo_id) REFERENCES veiculos(id),
+    FOREIGN KEY (forma_pagamento_id) REFERENCES formas_pagamento(id)
 );
