@@ -1,0 +1,17 @@
+# Ambiente virtual Python
+venv/
+__pycache__/
+*.pyc
+
+# Segredos e configuração local
+.env
+
+# Base de dados (contém dados de clientes — nunca em repositório público)
+database/*.db
+database/*.sqlite3
+
+# Ficheiros de sistema operativo
+.DS_Store
+
+# Editor
+.vscode/
