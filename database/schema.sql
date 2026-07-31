@@ -42,3 +42,11 @@ CREATE TABLE reservas (
     FOREIGN KEY (veiculo_id) REFERENCES veiculos(id),
     FOREIGN KEY (forma_pagamento_id) REFERENCES formas_pagamento(id)
 );
+CREATE TABLE utilizadores (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password_hash TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'gestor',  -- 'gestor', 'admin'
+    data_criacao TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
