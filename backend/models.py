@@ -37,3 +37,19 @@ class FormaPagamento(db.Model):
     tipo = db.Column(db.String, nullable=False)
     detalhes = db.Column(db.String)
 
+class Reserva(db.Model):
+    __tablename__ = 'reservas'
+
+    id = db.Column(db.Integer, primary_key=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
+    veiculo_id = db.Column(db.Integer, db.ForeignKey('veiculos.id'), nullable=False)
+    data_inicio = db.Column(db.String, nullable=False)
+    data_fim = db.Column(db.String, nullable=False)
+    valor_total = db.Column(db.Float, nullable=False)
+    forma_pagamento_id = db.Column(db.Integer, db.ForeignKey('formas_pagamento.id'), nullable=False)
+    estado = db.Column(db.String, nullable=False, default='Ativa')  # 'Ativa','Cancelada','Concluída'
+    data_criacao = db.Column(db.String, nullable=False, server_default=db.func.current_timestamp())
+
+    cliente = db.relationship('Cliente')
+    veiculo = db.relationship('Veiculo')
+    forma_pagamento = db.relationship('FormaPagamento')
