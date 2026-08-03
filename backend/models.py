@@ -28,3 +28,12 @@ class Cliente(db.Model):
 	email = db.Column(db.String, nullable=False, unique=True)
 	password_hash = db.Column(db.String, nullable=False)
 	data_registo = db.Column(db.String, nullable=False, server_default=db.func.current_timestamp())
+
+class FormaPagamento(db.Model):
+    __tablename__ = 'formas_pagamento'
+
+    id = db.Column(db.Integer, primary_key=True)
+    cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'), nullable=False)
+    tipo = db.Column(db.String, nullable=False)
+    detalhes = db.Column(db.String)
+
