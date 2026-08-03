@@ -61,5 +61,5 @@ class Utilizador(db.Model):
     nome = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
     password_hash = db.Column(db.String, nullable=False)
-    papel = db.Column(db.String, nullable=False, default='gestor')  # 'gestor', 'admin'
+    role = db.Column(db.String, nullable=False, default='gestor')  # 'gestor', 'admin'
     data_registo = db.Column(db.String, nullable=False, server_default=db.func.current_timestamp())
