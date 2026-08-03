@@ -53,3 +53,13 @@ class Reserva(db.Model):
     cliente = db.relationship('Cliente')
     veiculo = db.relationship('Veiculo')
     forma_pagamento = db.relationship('FormaPagamento')
+
+class Utilizador(db.Model):
+    __tablename__ = 'utilizadores'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False, unique=True)
+    password_hash = db.Column(db.String, nullable=False)
+    papel = db.Column(db.String, nullable=False, default='gestor')  # 'gestor', 'admin'
+    data_registo = db.Column(db.String, nullable=False, server_default=db.func.current_timestamp())
