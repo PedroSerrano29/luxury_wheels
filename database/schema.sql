@@ -50,3 +50,6 @@ CREATE TABLE utilizadores (
     role TEXT NOT NULL DEFAULT 'gestor',  -- 'gestor', 'admin'
     data_criacao TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE veiculos ADD COLUMN matricula TEXT;
+ALTER TABLE veiculos ADD COLUMN combustivel TEXT;
