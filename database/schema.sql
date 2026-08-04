@@ -52,4 +52,5 @@ CREATE TABLE utilizadores (
 );
 
 ALTER TABLE veiculos ADD COLUMN matricula TEXT;
-ALTER TABLE veiculos ADD COLUMN combustivel TEXT;
+CREATE UNIQUE INDEX idx_veiculos_matricula ON veiculos(matricula);
+ALTER TABLE veiculos ADD COLUMN combustivel TEXT;  
