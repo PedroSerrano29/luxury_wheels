@@ -31,4 +31,4 @@ def mapear_transmissao(transmissao_original, categoria_original, tipo_original):
     return transmissao_original  # Para carros, mantém a transmissão original
 
 def mapear_disponivel(disponivel_original):
-    return True if disponivel_original == 'TRUE' else False
+    return disponivel_original == 'TRUE'
