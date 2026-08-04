@@ -8,6 +8,8 @@ class Veiculo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     marca = db.Column(db.String, nullable=False)
     modelo = db.Column(db.String, nullable=False)
+    matricula = db.Column(db.String)
+    combustivel = db.Column(db.String)
     categoria = db.Column(db.String, nullable=False)
     transmissao = db.Column(db.String, nullable=False)
     tipo = db.Column(db.String, nullable=False)
