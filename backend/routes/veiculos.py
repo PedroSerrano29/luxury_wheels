@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import Veiculo
+from models import db, Veiculo
 
 def mapear_capacidade(grupo):
     mapa = {
@@ -74,3 +74,28 @@ def obter_veiculo(veiculo_id):
         "imagem_url": v.imagem_url,
         "disponivel": v.disponivel,
     })
+
+@veiculos_bp.route('/api/veiculos', methods=['POST'])
+def criar_veiculo():
+    dados = request.get_json()
+
+    novo_veiculo = Veiculo(
+        marca=dados['marca'],
+        modelo=dados['modelo'],
+        matricula=dados.get('matricula'),
+        combustivel=dados.get('combustivel'),
+        categoria=dados['categoria'],
+        transmissao=dados['transmissao'],
+        tipo=dados['tipo'],
+        capacidade_pessoas=dados['capacidade_pessoas'],
+        valor_diaria=dados['valor_diaria'],
+        imagem_url=dados.get('imagem_url'),
+        data_ultima_revisao=dados.get('data_ultima_revisao'),
+        data_proxima_revisao=dados.get('data_proxima_revisao'),
+        data_ultima_inspecao=dados.get('data_ultima_inspecao'),
+    )
+
+    db.session.add(novo_veiculo)
+    db.session.commit()
+
+    return jsonify({"id": novo_veiculo.id, "mensagem": "Veículo criado com sucesso"}), 201
