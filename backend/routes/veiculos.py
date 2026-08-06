@@ -1,11 +1,23 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from models import Veiculo
 
 veiculos_bp = Blueprint('veiculos', __name__)
 
 @veiculos_bp.route('/api/veiculos', methods=['GET'])
 def listar_veiculos():
-    veiculos = Veiculo.query.all()
+    query = Veiculo.query
+
+    categoria = request.args.get('categoria')
+    if categoria:
+        query = query.filter_by(categoria=categoria)
+
+    if tipo := request.args.get('tipo'): # a mesma funçao que a de cima, mas usando o walrus operator
+        query = query.filter_by(tipo=tipo)
+
+    if transmissao := request.args.get('transmissao'):
+        query = query.filter_by(transmissao=transmissao)
+
+    veiculos = query.all()
     resultado = [
         {
             "id": v.id,
