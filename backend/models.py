@@ -22,6 +22,26 @@ class Veiculo(db.Model):
     disponivel = db.Column(db.Boolean, nullable=False, default=True)
     em_manutencao = db.Column(db.Boolean, nullable=False, default=False)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "marca": self.marca,
+            "modelo": self.modelo,
+            "matricula": self.matricula,
+            "combustivel": self.combustivel,
+            "categoria": self.categoria,
+            "transmissao": self.transmissao,
+            "tipo": self.tipo,
+            "capacidade_pessoas": self.capacidade_pessoas,
+            "valor_diaria": self.valor_diaria,
+            "imagem_url": self.imagem_url,
+            "data_ultima_revisao": self.data_ultima_revisao,
+            "data_proxima_revisao": self.data_proxima_revisao,
+            "data_ultima_inspecao": self.data_ultima_inspecao,
+            "disponivel": self.disponivel,
+            "em_manutencao": self.em_manutencao,
+        }
+
 class Cliente(db.Model):
 	__tablename__ = 'clientes'
 	

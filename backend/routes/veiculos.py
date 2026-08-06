@@ -37,21 +37,7 @@ def listar_veiculos():
             query = query.filter(Veiculo.capacidade_pessoas <= maximo)
 
     veiculos = query.all()
-    resultado = [
-        {
-            "id": v.id,
-            "marca": v.marca,
-            "modelo": v.modelo,
-            "categoria": v.categoria,
-            "transmissao": v.transmissao,
-            "tipo": v.tipo,
-            "capacidade_pessoas": v.capacidade_pessoas,
-            "valor_diaria": v.valor_diaria,
-            "imagem_url": v.imagem_url,
-            "disponivel": v.disponivel
-        }
-        for v in veiculos
-    ]
+    resultado = [v.to_dict() for v in veiculos]
     return jsonify(resultado)
 
 #funcao teste
@@ -62,18 +48,11 @@ def obter_veiculo(veiculo_id):
     if v is None:
         return jsonify({"erro": "Veículo não encontrado"}), 404
 
-    return jsonify({
-        "id": v.id,
-        "marca": v.marca,
-        "modelo": v.modelo,
-        "categoria": v.categoria,
-        "transmissao": v.transmissao,
-        "tipo": v.tipo,
-        "capacidade_pessoas": v.capacidade_pessoas,
-        "valor_diaria": v.valor_diaria,
-        "imagem_url": v.imagem_url,
-        "disponivel": v.disponivel,
-    })
+    return jsonify(v.to_dict())
+
+### Funções para a gestão de frotas de veículos ###
+
+### POST /api/veiculos (criar) ###
 
 @veiculos_bp.route('/api/veiculos', methods=['POST'])
 def criar_veiculo():
@@ -99,3 +78,49 @@ def criar_veiculo():
     db.session.commit()
 
     return jsonify({"id": novo_veiculo.id, "mensagem": "Veículo criado com sucesso"}), 201
+
+### PUT /api/veiculos/<id> (alterar) ###
+
+@veiculos_bp.route('/api/veiculos/<int:veiculo_id>', methods=['PUT'])
+def atualizar_veiculo(veiculo_id):
+    v = Veiculo.query.get(veiculo_id)
+
+    if v is None:
+        return jsonify({"erro": "Veículo não encontrado"}), 404
+
+    dados = request.get_json()
+
+    if 'marca' in dados:
+        v.marca = dados['marca']
+    if 'modelo' in dados:
+        v.modelo = dados['modelo']
+    if 'valor_diaria' in dados:
+        v.valor_diaria = dados['valor_diaria']
+    if 'matricula' in dados:
+        v.matricula = dados['matricula']
+    if 'combustivel' in dados:
+        v.combustivel = dados['combustivel']
+    if 'categoria' in dados:
+        v.categoria = dados['categoria']
+    if 'transmissao' in dados:
+        v.transmissao = dados['transmissao']
+    if 'tipo' in dados:
+        v.tipo = dados['tipo']
+    if 'capacidade_pessoas' in dados:
+        v.capacidade_pessoas = dados['capacidade_pessoas']
+    if 'imagem_url' in dados:
+        v.imagem_url = dados['imagem_url']
+    if 'data_ultima_revisao' in dados:
+        v.data_ultima_revisao = dados['data_ultima_revisao']
+    if 'data_proxima_revisao' in dados:
+        v.data_proxima_revisao = dados['data_proxima_revisao']
+    if 'data_ultima_inspecao' in dados:
+        v.data_ultima_inspecao = dados['data_ultima_inspecao']
+    if 'disponivel' in dados:
+        v.disponivel = dados['disponivel']
+    if 'em_manutencao' in dados:
+        v.em_manutencao = dados['em_manutencao']
+
+    db.session.commit()
+
+    return jsonify({"mensagem": "Veículo atualizado com sucesso"})
