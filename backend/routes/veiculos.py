@@ -17,6 +17,9 @@ def listar_veiculos():
     if transmissao := request.args.get('transmissao'):
         query = query.filter_by(transmissao=transmissao)
 
+    if valor_maximo := request.args.get('valor_maximo'):
+        query = query.filter(Veiculo.valor_diaria <= float(valor_maximo))    
+
     veiculos = query.all()
     resultado = [
         {
