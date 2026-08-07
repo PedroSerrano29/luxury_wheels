@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from models import db, Veiculo
+from models import db, Veiculo, Reserva  
 
 def mapear_capacidade(grupo):
     mapa = {
@@ -124,3 +124,36 @@ def atualizar_veiculo(veiculo_id):
     db.session.commit()
 
     return jsonify({"mensagem": "Veículo atualizado com sucesso"})
+
+### Soft delete — PUT /api/veiculos/<id>/desativar ###
+@veiculos_bp.route('/api/veiculos/<int:veiculo_id>/desativar', methods=['PUT'])
+def desativar_veiculo(veiculo_id):
+    v = Veiculo.query.get(veiculo_id)
+    if v is None:
+        return jsonify({"erro": "Veículo não encontrado"}), 404
+
+    v.ativo = False
+    v.disponivel = False
+    db.session.commit()
+
+    return jsonify({"mensagem": "Veículo desativado com sucesso"})
+
+### Hard delete — DELETE /api/veiculos/<id> ###
+# precisa de importar Reserva também
+
+@veiculos_bp.route('/api/veiculos/<int:veiculo_id>', methods=['DELETE'])
+def apagar_veiculo(veiculo_id):
+    v = Veiculo.query.get(veiculo_id)
+    if v is None:
+        return jsonify({"erro": "Veículo não encontrado"}), 404
+
+    # TODO: quando a autenticação estiver pronta, verificar aqui que o utilizador é admin
+
+    tem_reservas = Reserva.query.filter_by(veiculo_id=veiculo_id).first() is not None
+    if tem_reservas:
+        return jsonify({"erro": "Não é possível apagar: veículo tem reservas associadas. Use desativar em vez disso."}), 409
+
+    db.session.delete(v)
+    db.session.commit()
+
+    return jsonify({"mensagem": "Veículo apagado permanentemente"})
