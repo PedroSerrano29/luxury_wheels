@@ -15,3 +15,6 @@ database/*.sqlite3
 
 # Editor
 .vscode/
+
+# Notas
+docs/Notas.txt
