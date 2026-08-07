@@ -21,6 +21,7 @@ class Veiculo(db.Model):
     data_ultima_inspecao = db.Column(db.String)
     disponivel = db.Column(db.Boolean, nullable=False, default=True)
     em_manutencao = db.Column(db.Boolean, nullable=False, default=False)
+    ativo = db.Column(db.Boolean, nullable=False, default=True)
 
     def to_dict(self):
         return {
@@ -40,6 +41,7 @@ class Veiculo(db.Model):
             "data_ultima_inspecao": self.data_ultima_inspecao,
             "disponivel": self.disponivel,
             "em_manutencao": self.em_manutencao,
+            "ativo": self.ativo
         }
 
 class Cliente(db.Model):

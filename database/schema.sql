@@ -54,3 +54,4 @@ CREATE TABLE utilizadores (
 ALTER TABLE veiculos ADD COLUMN matricula TEXT;
 CREATE UNIQUE INDEX idx_veiculos_matricula ON veiculos(matricula);
 ALTER TABLE veiculos ADD COLUMN combustivel TEXT;  
+ALTER TABLE veiculos ADD COLUMN ativo BOOLEAN NOT NULL DEFAULT 1;
