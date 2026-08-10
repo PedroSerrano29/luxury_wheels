@@ -34,3 +34,24 @@ def registar_cliente():
     db.session.commit()
 
     return jsonify({"id": novo_cliente.id, "mensagem": "Utilizador registado com sucesso"}), 201
+
+
+### POST /api/auth/login ###
+
+@clientes_bp.route('/api/auth/login', methods=['POST'])
+def login_cliente():
+    dados =request.get_json()
+
+    email = dados.get('email')
+    password = dados.get('password')
+
+    cliente = Cliente.query.filter_by(email=email).first()
+    if cliente is None or not check_password_hash(cliente.password_hash, password):
+        return jsonify({"erro": "Credenciais inválidas"}), 401
+
+    return jsonify({
+        "id": cliente.id,
+        "nome": cliente.nome,
+        "email": cliente.email,
+        "mensagem": "Login efetuado com sucesso"
+    })
