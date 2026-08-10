@@ -17,4 +17,4 @@ database/*.sqlite3
 .vscode/
 
 # Notas
-docs/Notas.txt
+docs/COMANDOS.txt
