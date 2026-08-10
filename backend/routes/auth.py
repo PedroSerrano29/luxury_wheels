@@ -1,6 +1,8 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, Cliente
+import jwt
+import datetime
 
 clientes_bp = Blueprint ('Cliente', __name__)
 
@@ -49,9 +51,19 @@ def login_cliente():
     if cliente is None or not check_password_hash(cliente.password_hash, password):
         return jsonify({"erro": "Credenciais inválidas"}), 401
 
+    token =jwt.encode(
+        {
+            "cliente_id": cliente.id,
+            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=24)
+            },
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256'
+    )
+
     return jsonify({
         "id": cliente.id,
         "nome": cliente.nome,
         "email": cliente.email,
+        "token": token,
         "mensagem": "Login efetuado com sucesso"
     })
