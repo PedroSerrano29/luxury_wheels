@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, Cliente
+from models import db, Cliente, Utilizador
 import jwt
 import datetime
 
@@ -64,6 +64,38 @@ def login_cliente():
         "id": cliente.id,
         "nome": cliente.nome,
         "email": cliente.email,
+        "token": token,
+        "mensagem": "Login efetuado com sucesso"
+    })
+
+### POST /api/auth/login-staff ### - Login de utilizador
+
+@clientes_bp.route('/api/auth/login-staff', methods=['POST'])
+def login_staff():
+    dados = request.get_json()
+    email = dados.get('email')
+    password = dados.get('password')
+
+    utilizador = Utilizador.query.filter_by(email=email).first()
+
+    if utilizador is None or not check_password_hash(utilizador.password_hash, password):
+        return jsonify({"erro": "Credenciais inválidas"}), 401
+
+    token = jwt.encode(
+        {
+            "utilizador_id": utilizador.id,
+            "role": utilizador.role,
+            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=24)
+        },
+        current_app.config['SECRET_KEY'],
+        algorithm="HS256"
+    )
+
+    return jsonify({
+        "id": utilizador.id,
+        "nome": utilizador.nome,
+        "email": utilizador.email,
+        "role": utilizador.role,
         "token": token,
         "mensagem": "Login efetuado com sucesso"
     })

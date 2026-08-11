@@ -86,4 +86,4 @@ class Utilizador(db.Model):
     email = db.Column(db.String, nullable=False, unique=True)
     password_hash = db.Column(db.String, nullable=False)
     role = db.Column(db.String, nullable=False, default='gestor')  # 'gestor', 'admin'
-    data_registo = db.Column(db.String, nullable=False, server_default=db.func.current_timestamp())
+    data_criacao = db.Column(db.String, nullable=False, server_default=db.func.current_timestamp())
