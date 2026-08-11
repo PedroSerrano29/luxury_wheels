@@ -17,5 +17,5 @@ def token_obrigatorio(funcao_original):
         except jwt.InvalidTokenError:
             return jsonify({"erro": "Token inválido"}), 401
 
-        return funcao_original(*args, **kwargs)
+        return funcao_original(dados, *args, **kwargs)
     return funcao_envolvida

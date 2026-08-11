@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
-from models import db, Veiculo, Reserva  
+from models import db, Veiculo, Reserva
+from auth_utils import token_obrigatorio  
 
 def mapear_capacidade(grupo):
     mapa = {
@@ -142,12 +143,14 @@ def desativar_veiculo(veiculo_id):
 # precisa de importar Reserva também
 
 @veiculos_bp.route('/api/veiculos/<int:veiculo_id>', methods=['DELETE'])
-def apagar_veiculo(veiculo_id):
+@token_obrigatorio
+def apagar_veiculo(dados, veiculo_id):
+    if dados.get('role') != 'admin':
+        return jsonify({"erro": "Apenas administradores podem apagar veículos"}), 403
+    
     v = Veiculo.query.get(veiculo_id)
     if v is None:
         return jsonify({"erro": "Veículo não encontrado"}), 404
-
-    # TODO: quando a autenticação estiver pronta, verificar aqui que o utilizador é admin
 
     tem_reservas = Reserva.query.filter_by(veiculo_id=veiculo_id).first() is not None
     if tem_reservas:
