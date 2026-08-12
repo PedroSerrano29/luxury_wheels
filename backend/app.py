@@ -3,6 +3,7 @@ from config import Config
 from models import db
 from routes.veiculos import veiculos_bp
 from routes.auth import clientes_bp
+from routes.reservas import reserva_bd
 
 def create_app():
     app = Flask(__name__)
@@ -11,6 +12,7 @@ def create_app():
     db.init_app(app)
     app.register_blueprint(veiculos_bp)
     app.register_blueprint(clientes_bp)
+    app.register_blueprint(reserva_bd)
 
     return app
 
