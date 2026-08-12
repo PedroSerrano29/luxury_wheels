@@ -78,6 +78,19 @@ class Reserva(db.Model):
     veiculo = db.relationship('Veiculo')
     forma_pagamento = db.relationship('FormaPagamento')
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "cliente_id": self.cliente_id,
+            "veiculo_id": self.veiculo_id,
+            "data_inicio": self.data_inicio,
+            "data_fim": self.data_fim,
+            "valor_total": self.valor_total,
+            "forma_pagamento_id": self.forma_pagamento_id,
+            "estado": self.estado,
+            "data_criacao": self.data_criacao,
+        }
+
 class Utilizador(db.Model):
     __tablename__ = 'utilizadores'
 

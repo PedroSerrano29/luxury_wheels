@@ -67,3 +67,13 @@ def criar_reserva(dados):
         "valor_total": valor_total,
         "mensagem": "Reserva criada com sucesso"
     }), 201
+
+@reserva_bd.route('/api/reservas', methods=['GET'])
+@token_obrigatorio
+def listar_reserva(dados):
+    cliente_id = dados.get('cliente_id')
+
+    reservas = Reserva.query.filter_by(cliente_id=cliente_id).all()
+    resultado = [r.to_dict() for r in reservas]
+
+    return jsonify(resultado)
