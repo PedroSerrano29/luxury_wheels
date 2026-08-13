@@ -77,3 +77,27 @@ def listar_reserva(dados):
     resultado = [r.to_dict() for r in reservas]
 
     return jsonify(resultado)
+
+    ### PUT /api/reservas/<id> ###
+
+@reserva_bd.route('/api/reservas/<int:reserva_id>', methods=['PUT'])
+@token_obrigatorio
+def alterar_reserva(dados, reserva_id):
+    cliente_id_token = dados.get('cliente_id')
+
+    reserva = Reserva.query.get(reserva_id)
+    if reserva is None:
+        return jsonify({"erro": "Reserva não encontrada"}), 404
+
+    if reserva.cliente_id != cliente_id_token:
+        return jsonify({"erro": "Não tens permissão para alterar esta reserva"}), 403
+
+    corpo = request.get_json()
+    if corpo.get('cancelar'):
+        reserva.estado = 'Cancelada'
+
+        veiculo = Veiculo.query.get(reserva.veiculo_id)
+        veiculo.disponivel = True
+
+        db.session.commit()
+        return jsonify({"mensagem": "Reserva cancelada com sucesso"})
