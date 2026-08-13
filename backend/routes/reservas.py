@@ -101,3 +101,34 @@ def alterar_reserva(dados, reserva_id):
 
         db.session.commit()
         return jsonify({"mensagem": "Reserva cancelada com sucesso"})
+
+    nova_data_inicio = corpo.get('data_inicio', reserva.data_inicio)
+    nova_data_fim = corpo.get('data_fim', reserva.data_fim)
+
+    data_inicio_obj = dt.strptime(nova_data_inicio, "%Y-%m-%d").date()
+    data_fim_obj = dt.strptime(nova_data_fim, "%Y-%m-%d").date()
+
+    if data_fim_obj <= data_inicio_obj:
+        return jsonify({"erro": "A a data de fim deve ser posterior à tada de início"})
+
+    conflito = Reserva.query.filter(
+        Reserva.veiculo_id == reserva.veiculo_id,
+        Reserva.estado == 'Ativa',
+        Reserva.id != reserva_id,
+        Reserva.data_inicio <=nova_data_fim,
+        Reserva.data_fim >= nova_data_inicio
+    ).first()
+
+    if conflito is not None:
+        return jsonify({"erro": "Já existe outra reserva para essas datas"}), 409
+
+    veiculo = Veiculo.query.get(reserva.veiculo_id)
+    numero_dias = (data_fim_obj - data_inicio_obj).days
+
+    reserva.data_inicio = nova_data_inicio
+    reserva.data_fim = nova_data_fim
+    reserva.valor_total = veiculo.valor_diaria * numero_dias
+
+    db.session.commit()
+
+    return jsonify({"mensagem": "Reserva atualizada com sucesso", "novo_valor_total": reserva.valor_total})
