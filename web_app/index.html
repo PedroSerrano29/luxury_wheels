@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8">
+        <title>Luxury Wheels</title>
+    </head>
+    <body>
+        <h1>Teste de ligação à API</h1>
+        <div id="resultado"></div>
+
+        <script src="static/js/api.js"></script>
+        <script>
+            async function testar() {
+                const veiculos = await buscarVeiculos();
+                console.log(veiculos);
+                document.getElementById('resultado').textContent = JSON.stringify(veiculos, null, 2);
+            }
+            testar();
+        </script>
+    </body>
+</html>
