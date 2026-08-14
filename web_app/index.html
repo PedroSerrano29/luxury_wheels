@@ -5,17 +5,13 @@
         <title>Luxury Wheels</title>
     </head>
     <body>
-        <h1>Teste de ligação à API</h1>
-        <div id="resultado"></div>
+        <h1>Luxury Wheels</h1>
+        <div id="lista-veiculos"></div>
 
         <script src="static/js/api.js"></script>
+        <script src="static/js/pesquisa.js"></script>
         <script>
-            async function testar() {
-                const veiculos = await buscarVeiculos();
-                console.log(veiculos);
-                document.getElementById('resultado').textContent = JSON.stringify(veiculos, null, 2);
-            }
-            testar();
+            carregarVeiculos();
         </script>
     </body>
 </html>
