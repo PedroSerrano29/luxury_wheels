@@ -14,11 +14,17 @@
             </div>
         </header>
         <h1>Escolha o seu Luxo sobre Rodas</h1>
+
+        <div id="painel-filtros"></div>
+
         <div id="lista-veiculos"></div>
 
         <script src="static/js/api.js"></script>
         <script src="static/js/pesquisa.js"></script>
+        <script src="static/js/filtros.js"></script>
         <script>
+            document.getElementById('painel-filtros').appendChild(criarPainelFiltros());
+            ativarFiltragemAutomatica();
             carregarVeiculos();
         </script>
     </body>
