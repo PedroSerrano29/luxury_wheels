@@ -22,15 +22,18 @@ function criarCartaoVeiculo(veiculo) {
     return card;
 }
 
-
-async function carregarVeiculos() {
-    const veiculos = await buscarVeiculos();
-    const container = document.getElementById('lista-veiculos');
-
+function desenharVeiculos(veiculos) {
+    const container = document.getElementById('lista-veiculos');;
     container.innerHTML = '';
 
-    veiculos.forEach(veiculo =>{
+    veiculos.forEach(veiculo => {
         const card = criarCartaoVeiculo(veiculo);
         container.appendChild(card);
     });
+}
+
+
+async function carregarVeiculos() {
+    const veiculos = await buscarVeiculos();
+    desenharVeiculos(veiculos);
 }

@@ -69,6 +69,11 @@ function ativarFiltragemAutomatica() {
     campos.forEach(id => {
         document.getElementById(id).addEventListener('change', aplicarFiltro);
     });
+
+    document.getElementById('filtro-tipo').addEventListener('change', () => {
+        atualizarOpcoesCategoria();
+        aplicarFiltro();
+    });
 }
 
 function criarCampoNumero(id, label, placeholder) {
@@ -89,4 +94,56 @@ function criarCampoNumero(id, label, placeholder) {
     container.appendChild(input);
 
     return container;
+}
+
+async function aplicarFiltro() {
+    const tipo = document.getElementById('filtro-tipo').value;
+    const categoria = document.getElementById('filtro-categoria').value;
+    const transmissao = document.getElementById('filtro-transmissao').value;
+    const valorMaximo = document.getElementById('filtro-valor-maximo').value;
+    const capacidade = document.getElementById('filtro-capacidade').value;
+
+    const params = new URLSearchParams();
+
+    if (tipo) params.append('tipo', tipo);
+    if (categoria) params.append('categoria', categoria);
+    if (transmissao) params.append('transmissao', transmissao);
+    if (valorMaximo) params.append('valor_maximo', valorMaximo);
+    if (capacidade) params.append('capacidade', capacidade);
+
+    const resposta = await fetch(`http://127.0.0.1:5000/api/veiculos?${params.toString()}`);
+    const veiculos = await resposta.json();
+
+    desenharVeiculos(veiculos);
+}
+
+const OPCOES_CATEGORIA = {
+    'Carro': ['Pequeno', 'Médio', 'Grande', 'SUV', 'Luxo'],
+    'Moto': ['Naked', 'Scooter', 'Touring', 'Moto']
+};
+
+function atualizarOpcoesCategoria() {
+    const tipoSelecionado = document.getElementById('filtro-tipo').value;
+    const selectCategoria = document.getElementById('filtro-categoria');
+
+    selectCategoria.innerHTML ='';
+
+    const opcaoTodas = document.createElement('option');
+    opcaoTodas.value = '';
+    opcaoTodas.textContent = '— Todas —';
+    selectCategoria.appendChild(opcaoTodas);
+
+    let categorias;
+    if (tipoSelecionado === '') {
+        categorias = [...OPCOES_CATEGORIA['Carro'], ...OPCOES_CATEGORIA['Moto']];
+    } else {
+        categorias = OPCOES_CATEGORIA[tipoSelecionado] || [];
+    }
+
+    categorias.forEach(cat => {
+        const opcao = document.createElement('option');
+        opcao.value = cat;
+        opcao.textContent = cat;
+        selectCategoria.appendChild(opcao);
+    });
 }
