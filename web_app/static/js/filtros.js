@@ -126,7 +126,7 @@ async function aplicarFiltro() {
     if (categoria) params.append('categoria', categoria);
     if (transmissao) params.append('transmissao', transmissao);
     if (valorMaximo) params.append('valor_maximo', valorMaximo);
-    if (capacidade) params.append('capacidade', capacidade);
+    if (capacidade) params.append('capacidade_pessoas', capacidade);
 
     const resposta = await fetch(`http://127.0.0.1:5000/api/veiculos?${params.toString()}`);
     const veiculos = await resposta.json();
