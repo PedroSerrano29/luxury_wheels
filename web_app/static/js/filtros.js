@@ -22,6 +22,13 @@ function criarCampoSelect(id, label, opcoes) {
     return container;
 }
 
+let OPCOES_FILTRO = null;
+
+async function carregarOpcoesFiltro() {
+    const resposta =await fetch('http://127.0.0.1:5000/api/veiculos/opcoes-filtro');
+    OPCOES_FILTRO = await resposta.json();
+}
+
 function criarPainelFiltros() {
     const painel = document.createElement('div');
     painel.className = 'filtros';
@@ -30,11 +37,13 @@ function criarPainelFiltros() {
     titulo.textContent = 'Filtrar';
     painel.appendChild(titulo);
 
-    const campoTipo = criarCampoSelect('filtro-tipo', 'Tipo:', [
+
+    const opcoesTipo = [
         { valor: '', texto: '— Todos —' },
-        { valor: 'Carro', texto: 'Carro' },
-        { valor: 'Moto', texto: 'Moto' }
-    ]);
+        ...OPCOES_FILTRO.tipos.map(tipo => ({ valor:tipo, texto: tipo}))
+    ];
+
+    const campoTipo = criarCampoSelect('filtro-tipo', 'Tipo:', opcoesTipo);
     painel.appendChild(campoTipo);
 
     const campoCategoria = criarCampoSelect('filtro-categoria', 'Categoria:', [
@@ -45,19 +54,27 @@ function criarPainelFiltros() {
     const campoValorMaximo = criarCampoNumero('filtro-valor-maximo', 'Valor máximo/dia (€): ', 'Ex: 80');
     painel.appendChild(campoValorMaximo);
 
-    const campoTransmissao = criarCampoSelect('filtro-transmissao', 'Transmissão:', [
+    const opcoesTransmissao = [
         { valor: '', texto: '— Todas —' },
-        { valor: 'Automática', texto: 'Automática' },
-        { valor: 'Manual', texto: 'Manual' }
-    ]);
+        ...OPCOES_FILTRO.transmissoes.map(transmissao => ({ valor: transmissao, texto: transmissao}))
+    ];
+
+    const campoTransmissao = criarCampoSelect('filtro-transmissao', 'Transmissão:', opcoesTransmissao);
     painel.appendChild(campoTransmissao);
 
-    const campoCapacidade = criarCampoSelect('filtro-capacidade', 'Nº de pessoas:', [
+    
+    const ROTULOS_CAPACIDADE = {
+        "1-4": "1 a 4",
+        "5-6": "5 a 6",
+        "mais_de_7": "Mais de 7"
+    };
+
+    const opcoesCapacidade = [
         { valor: '', texto: '— Todas —' },
-        { valor: '1-4', texto: '1 a 4' },
-        { valor: '5-6', texto: '5 a 6' },
-        { valor: 'mais_de_7', texto: 'Mais de 7' }
-    ]);
+        ...OPCOES_FILTRO.grupos_capacidade.map(grupo => ({ valor: grupo, texto: ROTULOS_CAPACIDADE[grupo] || grupo }))
+    ];
+
+    const campoCapacidade = criarCampoSelect('filtro-capacidade', 'Nº de pessoas:', opcoesCapacidade);
     painel.appendChild(campoCapacidade);
 
     return painel
@@ -117,11 +134,6 @@ async function aplicarFiltro() {
     desenharVeiculos(veiculos);
 }
 
-const OPCOES_CATEGORIA = {
-    'Carro': ['Pequeno', 'Médio', 'Grande', 'SUV', 'Luxo'],
-    'Moto': ['Naked', 'Scooter', 'Touring', 'Moto']
-};
-
 function atualizarOpcoesCategoria() {
     const tipoSelecionado = document.getElementById('filtro-tipo').value;
     const selectCategoria = document.getElementById('filtro-categoria');
@@ -135,9 +147,9 @@ function atualizarOpcoesCategoria() {
 
     let categorias;
     if (tipoSelecionado === '') {
-        categorias = [...OPCOES_CATEGORIA['Carro'], ...OPCOES_CATEGORIA['Moto']];
+        categorias = [...new Set(Object.values(OPCOES_FILTRO.categorias_por_tipo).flat())];
     } else {
-        categorias = OPCOES_CATEGORIA[tipoSelecionado] || [];
+        categorias = OPCOES_FILTRO.categorias_por_tipo[tipoSelecionado] || [];
     }
 
     categorias.forEach(cat => {
