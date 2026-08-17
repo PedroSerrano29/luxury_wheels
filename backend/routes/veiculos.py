@@ -41,6 +41,26 @@ def listar_veiculos():
     resultado = [v.to_dict() for v in veiculos]
     return jsonify(resultado)
 
+@veiculos_bp.route('/api/veiculos/opcoes-filtro', methods=['GET'])
+def opcoes_filtro():
+    tipos = db.session.query(Veiculo.tipo).distinct().all()
+    tipos = [t[0] for t in tipos]
+
+    categorias_por_tipo = {}
+    for tipo in tipos:
+        categorias = db.session.query(Veiculo.categoria).filter_by(tipo=tipo).distinct().all()
+        categorias_por_tipo[tipo] = [c[0] for c in categorias]
+
+    transmissoes = db.session.query(Veiculo.transmissao).distinct().all()
+    transmissoes = [t[0] for t in transmissoes]
+
+    return jsonify({
+        "tipos": tipos,
+        "categorias_por_tipo": categorias_por_tipo,
+        "transmissoes": transmissoes
+    })
+
+
 #funcao teste
 @veiculos_bp.route('/api/veiculos/<int:veiculo_id>', methods=['GET'])
 def obter_veiculo(veiculo_id):
