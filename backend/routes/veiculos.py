@@ -2,13 +2,14 @@ from flask import Blueprint, jsonify, request
 from models import db, Veiculo, Reserva
 from auth_utils import token_obrigatorio  
 
-def mapear_capacidade(grupo):
-    mapa = {
+GRUPO_CAPACIDADE = {
         "1-4": (1, 4),
         "5-6": (5, 6),
         "mais_de_7": (7, None),
     }
-    return mapa.get(grupo, (None, None))
+
+def mapear_capacidade(grupo):
+    return GRUPO_CAPACIDADE.get(grupo, (None, None))
 
 veiculos_bp = Blueprint('veiculos', __name__)
 
@@ -57,7 +58,8 @@ def opcoes_filtro():
     return jsonify({
         "tipos": tipos,
         "categorias_por_tipo": categorias_por_tipo,
-        "transmissoes": transmissoes
+        "transmissoes": transmissoes,
+        "grupos_capacidade": list(GRUPO_CAPACIDADE.keys())
     })
 
 
