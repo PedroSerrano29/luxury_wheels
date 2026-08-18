@@ -146,3 +146,9 @@ body {
     border-bottom: 2px solid var(--dourado);
     padding-bottom: 8px;
 }
+
+.navbar-saudacao {
+    color: var(--branco-marfim);
+    margin-right: 12px;
+    font-weight: bold;
+}
