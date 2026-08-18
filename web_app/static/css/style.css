@@ -89,3 +89,61 @@ body {
     font-size: 1.1rem;
     margin-bottom: 16px;
 }
+
+.conteudo-principal {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 0 30px;
+}
+
+.filtros {
+    background-color: white;
+    border: 1px solid var(--cinza-borda);
+    border-radius: 8px;
+    padding: 20px;
+    width: 240px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 20px;
+}
+
+#lista-veiculos {
+    flex:1;
+}
+
+.campo-filtro {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+}
+
+.campo-filtro label {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--azul-petroleo);
+    margin-bottom: 4px;
+}
+
+.campo-filtro select,
+.campo-filtro input {
+    padding: 8px;
+    border: 1px solid var(--cinza-borda);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.campo-filtro select:focus,
+.campo-filtro input:focus {
+    outline: none;
+    border-color: var(--dourado);
+}
+
+.filtros h2 {
+    color: var(--azul-petroleo);
+    margin-top: 0;
+    font-size: 1.2rem;
+    border-bottom: 2px solid var(--dourado);
+    padding-bottom: 8px;
+}
