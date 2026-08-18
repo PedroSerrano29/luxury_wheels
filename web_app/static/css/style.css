@@ -92,7 +92,6 @@ body {
 
 .conteudo-principal {
     display: flex;
-    align-items: flex-start;
     gap: 24px;
     padding: 0 30px;
 }
