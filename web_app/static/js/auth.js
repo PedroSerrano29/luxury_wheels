@@ -16,3 +16,22 @@ document.getElementById('form-login').addEventListener('submit', async (evento) 
     localStorage.setItem('nome', resultado.dados.nome);
     window.location.href = 'index.html';
 });
+
+document.getElementById('form-registo').addEventListener('submit', async (evento) => {
+    evento.preventDefault();
+
+    const nome = document.getElementById('registo-nome').value;
+    const email = document.getElementById('registo-email').value;
+    const password = document.getElementById('registo-password').value;
+    const passwordConfirm = document.getElementById('registo-password-confirm').value;
+    const caixaErro = document.getElementById('registo-erro');
+
+    const resultado = await registarCliente(nome, email, password, passwordConfirm);
+
+    if (!resultado.ok) {
+        caixaErro.textContent = resultado.dados.erro;
+        return;
+    }
+
+    window.location.href = 'login.html';
+});
