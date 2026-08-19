@@ -1,37 +1,44 @@
-document.getElementById('form-login').addEventListener('submit', async (evento) => {
-    evento.preventDefault();
+const formLogin = document.getElementById('form-login');
+if (formLogin) {
+    formLogin.addEventListener('submit', async (evento) => {
+        evento.preventDefault();
 
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const caixaErro = document.getElementById('login-erro');
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        const caixaErro = document.getElementById('login-erro');
 
-    const resultado = await loginClient(email, password);
+        const resultado = await loginClient(email, password);
 
-    if(!resultado.ok) {
-        caixaErro.textContent = resultado.dados.erro;
-        return;
-    }
+        if(!resultado.ok) {
+            caixaErro.textContent = resultado.dados.erro;
+            return;
+        }
 
-    localStorage.setItem('token', resultado.dados.token);
-    localStorage.setItem('nome', resultado.dados.nome);
-    window.location.href = 'index.html';
-});
+        localStorage.setItem('token', resultado.dados.token);
+        localStorage.setItem('nome', resultado.dados.nome);
+        window.location.href = 'index.html';
+    });
+}
 
-document.getElementById('form-registo').addEventListener('submit', async (evento) => {
-    evento.preventDefault();
+const formRegisto = document.getElementById('form-registo');
+if (formRegisto) {
+    formRegisto.addEventListener('submit', async (evento) => {
+        evento.preventDefault();
 
-    const nome = document.getElementById('registo-nome').value;
-    const email = document.getElementById('registo-email').value;
-    const password = document.getElementById('registo-password').value;
-    const passwordConfirm = document.getElementById('registo-password-confirm').value;
-    const caixaErro = document.getElementById('registo-erro');
+        const nome = document.getElementById('registo-nome').value;
+        const email = document.getElementById('registo-email').value;
+        const password = document.getElementById('registo-password').value;
+        const passwordConfirm = document.getElementById('registo-password-confirm').value;
+        const caixaErro = document.getElementById('registo-erro');
 
-    const resultado = await registarCliente(nome, email, password, passwordConfirm);
+        const resultado = await registarCliente(nome, email, password, passwordConfirm);
 
-    if (!resultado.ok) {
-        caixaErro.textContent = resultado.dados.erro;
-        return;
-    }
+        if (!resultado.ok) {
+            caixaErro.textContent = resultado.dados.erro;
+            return;
+        }
 
-    window.location.href = 'login.html';
-});
+        window.location.href = 'login.html';
+    });
+}
+
