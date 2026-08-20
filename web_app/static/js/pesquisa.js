@@ -1,4 +1,8 @@
 function criarCartaoVeiculo(veiculo) {
+    const link = document.createElement('a');
+    link.href = `veiculo.html?id=${veiculo.id}`;
+    link.className = 'veiculo-card-link';
+    
     const card = document.createElement('div');
     card.className = 'veiculo-card';
 
@@ -19,7 +23,8 @@ function criarCartaoVeiculo(veiculo) {
     card.appendChild(info);
     card.appendChild(preco);
 
-    return card;
+    link.appendChild(card);
+    return link;
 }
 
 function desenharVeiculos(veiculos) {

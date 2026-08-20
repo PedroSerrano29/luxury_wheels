@@ -29,6 +29,7 @@ body {
     font-weight: bold;
 }
 
+.navbar-botoes a,
 .navbar-botoes button {
     background-color: var(--azul-petroleo-claro);
     color: var(--branco-marfim);
@@ -38,8 +39,11 @@ body {
     border-radius: 4px;
     cursor: pointer;
     font-family: inherit;
+    text-decoration: none;
+    display: inline-block;
 }
 
+.navbar-botoes a:hover,
 .navbar-botoes button:hover {
     background-color: var(--dourado);
     color: var(--azul-petroleo);
@@ -88,6 +92,11 @@ body {
     color: var(--dourado);
     font-size: 1.1rem;
     margin-bottom: 16px;
+}
+
+.veiculo-card-link {
+    text-decoration: none;
+    color: inherit;
 }
 
 .conteudo-principal {
@@ -151,4 +160,33 @@ body {
     color: var(--branco-marfim);
     margin-right: 12px;
     font-weight: bold;
+}
+
+.detalhe-veiculo {
+    max-width: 700px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.detalhe-veiculo h1 {
+    color: var(--azul-petroleo);
+}
+
+.detalhe-imagem {
+    width: 100%;
+    max-width: 500px;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 16px;
+}
+
+.detalhe-veiculo p {
+    font-size: 1.05rem;
+    margin: 8px 0;
+}
+
+.rotulo-detalhe {
+    font-weight: bold;
+    color: var(--azul-petroleo);
 }
