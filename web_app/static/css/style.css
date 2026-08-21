@@ -215,6 +215,7 @@ body {
 }
 
 .botao-principal {
+    box-sizing: border-box;
     display: block;
     text-align: center;
     background-color: var(--azul-petroleo);

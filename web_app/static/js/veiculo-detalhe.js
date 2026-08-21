@@ -33,7 +33,7 @@ function montarPainelReserva(veiculo) {
         mensagem.textContent = 'Iniciar sessão para efetuar uma reserva.';
 
         const link = document.createElement('a');
-        link.href = 'login.html';
+        link.href = `login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
         link.className = 'botao-principal';
         link.textContent = 'Iniciar sessão';
 

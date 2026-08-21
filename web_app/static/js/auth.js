@@ -16,7 +16,10 @@ if (formLogin) {
 
         localStorage.setItem('token', resultado.dados.token);
         localStorage.setItem('nome', resultado.dados.nome);
-        window.location.href = 'index.html';
+
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+        window.location.href = redirect || 'index.html';
     });
 }
 
