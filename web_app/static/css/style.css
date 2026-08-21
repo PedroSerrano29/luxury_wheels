@@ -163,7 +163,9 @@ body {
 }
 
 .detalhe-veiculo {
-    max-width: 700px;
+    display: flex;
+    gap: 30px;
+    max-width: 1000px;
     margin: 30px auto;
     padding: 0 20px;
 }
@@ -188,5 +190,46 @@ body {
 
 .rotulo-detalhe {
     font-weight: bold;
+    color: var(--azul-petroleo);
+}
+
+.info-veiculo {
+    flex: 2;
+}
+
+.painel-reserva{
+    flex: 1;
+    background-color: white;
+    border: 1px solid var(--cinza-borda);
+    border-radius: 8px;
+    padding: 20px;
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.painel-reserva h2 {
+    border-bottom: 2px solid var(--dourado);
+    padding-bottom: 8px;
+    margin-top: 0;
+}
+
+.botao-principal {
+    display: block;
+    text-align: center;
+    background-color: var(--azul-petroleo);
+    color: white;
+    padding: 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-top: 12px;
+    font-family: inherit;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+}
+
+.botao-principal:hover {
+    background-color: var(--dourado);
     color: var(--azul-petroleo);
 }

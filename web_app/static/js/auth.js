@@ -7,7 +7,7 @@ if (formLogin) {
         const password = document.getElementById('login-password').value;
         const caixaErro = document.getElementById('login-erro');
 
-        const resultado = await loginClient(email, password);
+        const resultado = await loginCliente(email, password);
 
         if(!resultado.ok) {
             caixaErro.textContent = resultado.dados.erro;

@@ -19,11 +19,40 @@ function criarLinha(rotulo, valor) {
     return p;
 }
 
+function montarPainelReserva(veiculo) {
+    const painel = document.getElementById('painel-reserva');
+    painel.innerHTML = '';
+
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+        const titulo = document.createElement('h2');
+        titulo.textContent = 'Reservar';
+
+        const mensagem = document.createElement('p');
+        mensagem.textContent = 'Iniciar sessão para efetuar uma reserva.';
+
+        const link = document.createElement('a');
+        link.href = 'login.html';
+        link.className = 'botao-principal';
+        link.textContent = 'Iniciar sessão';
+
+        painel.appendChild(titulo);
+        painel.appendChild(mensagem);
+        painel.appendChild(link);
+        return;
+    }
+    const titulo = document.createElement('h2');
+    titulo.textContent = 'Reservar';
+    painel.appendChild(titulo);
+
+}
+
 async function carregarDetalheVeiculo() {
     const id =obterIdDoURL();
     const veiculo = await buscarVeiculo(id);
     
-    const container = document.getElementById('detalhe-veiculo');
+    const container = document.getElementById('info-veiculo');
     container.innerHTML = '';
 
     const titulo = document.createElement('h1');
@@ -40,6 +69,8 @@ async function carregarDetalheVeiculo() {
     container.appendChild(criarLinha('Capacidade', `${veiculo.capacidade_pessoas} pessoas`));
     container.appendChild(criarLinha('Combustível', veiculo.combustivel));
     container.appendChild(criarLinha('Valor', `${veiculo.valor_diaria}€ / dia`));
+
+    montarPainelReserva(veiculo);
 }
 
 carregarDetalheVeiculo()
