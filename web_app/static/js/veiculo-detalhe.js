@@ -46,6 +46,37 @@ function montarPainelReserva(veiculo) {
     titulo.textContent = 'Reservar';
     painel.appendChild(titulo);
 
+    // formulário
+
+    const campoDataInicio = document.createElement('div');
+    campoDataInicio.className = 'campo-filtro';
+
+    const labelInicio = document.createElement('label');
+    labelInicio.setAttribute('for', 'reserva-data-inicio');
+    labelInicio.textContent = 'Data início:';
+
+    const inputInicio = document.createElement('input');
+    inputInicio.type = 'date';
+    inputInicio.id = 'reserva-data-inicio';
+
+    campoDataInicio.appendChild(labelInicio);
+    campoDataInicio.appendChild(inputInicio);
+    painel.appendChild(campoDataInicio);
+
+    const campoDataFim = document.createElement('div');
+    campoDataFim.className = 'campo-filtro';
+
+    const labelFim = document.createElement('label');
+    labelFim.setAttribute('for', 'reserva-data-fim');
+    labelFim.textContent = 'Data fim:';
+
+    const inputFim = document.createElement('input');
+    inputFim.type = 'date';
+    inputFim.id = 'reserva-data-fim';
+
+    campoDataFim.appendChild(labelFim);
+    campoDataFim.appendChild(inputFim);
+    painel.appendChild(campoDataFim);
 }
 
 async function carregarDetalheVeiculo() {
