@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request, current_app
 from models import db, Reserva, Veiculo
 from auth_utils import token_obrigatorio
-from datetime import datetime as dt
+from services.reservas_service import ErroReserva, validar_datas_reserva
 
 reserva_bd = Blueprint('Reserva', __name__)
 
@@ -38,11 +38,13 @@ def criar_reserva(dados):
     if not veiculo_disponivel_no_periodo(veiculo_id, data_inicio, data_fim):
         return jsonify({"erro": "Veículo ja tem um reserva para essas datas"}), 409
 
-    data_inicio_obj = dt.strptime(data_inicio, "%Y-%m-%d").date()
-    data_fim_obj = dt.strptime(data_fim, "%Y-%m-%d").date()
-
-    if data_fim_obj <= data_inicio_obj:
-        return jsonify({"erro": "A data de fim deve ser posterior à data de inicio"}), 400
+    try:
+        data_inicio_obj, data_fim_obj = validar_datas_reserva(
+            data_inicio,
+            data_fim
+        )
+    except ErroReserva as erro:
+        return jsonify({"erro": erro.mensagem}), erro.status_code
 
     numero_dias = (data_fim_obj - data_inicio_obj).days
     valor_total = veiculo.valor_diaria * numero_dias
@@ -105,11 +107,13 @@ def alterar_reserva(dados, reserva_id):
     nova_data_inicio = corpo.get('data_inicio', reserva.data_inicio)
     nova_data_fim = corpo.get('data_fim', reserva.data_fim)
 
-    data_inicio_obj = dt.strptime(nova_data_inicio, "%Y-%m-%d").date()
-    data_fim_obj = dt.strptime(nova_data_fim, "%Y-%m-%d").date()
-
-    if data_fim_obj <= data_inicio_obj:
-        return jsonify({"erro": "A a data de fim deve ser posterior à tada de início"})
+    try:
+        data_inicio_obj, data_fim_obj = validar_datas_reserva(
+            nova_data_inicio,
+            nova_data_fim
+        )
+    except ErroReserva as erro:
+        return jsonify({"erro": erro.mensagem}), erro.status_code
 
     conflito = Reserva.query.filter(
         Reserva.veiculo_id == reserva.veiculo_id,
