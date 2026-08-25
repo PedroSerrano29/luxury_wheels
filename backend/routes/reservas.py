@@ -1,19 +1,13 @@
 from flask import Blueprint, jsonify, request, current_app
 from models import db, Reserva, Veiculo
 from auth_utils import token_obrigatorio
-from services.reservas_service import ErroReserva, validar_datas_reserva
+from services.reservas_service import (
+    ErroReserva,
+    validar_datas_reserva,
+    veiculo_disponivel_no_periodo
+)
 
 reserva_bd = Blueprint('Reserva', __name__)
-
-def veiculo_disponivel_no_periodo(veiculo_id, data_inicio, data_fim):
-    conflito = Reserva.query.filter(
-        Reserva.veiculo_id == veiculo_id,
-        Reserva.estado == 'Ativa',
-        Reserva.data_inicio <= data_fim,
-        Reserva.data_fim >= data_inicio
-    ).first()
-
-    return conflito is None
 
 ### POST /api/reservas ### - Fazer reserva
 
@@ -33,10 +27,9 @@ def criar_reserva(dados):
         return jsonify({"erro": "Veículo não encontrado"}), 404
 
     if not veiculo.ativo or veiculo.em_manutencao:
-        return jsonify({"erro": "Veículo não está disponivel para aluguer"}), 409
-
-    if not veiculo_disponivel_no_periodo(veiculo_id, data_inicio, data_fim):
-        return jsonify({"erro": "Veículo ja tem um reserva para essas datas"}), 409
+        return jsonify({
+            "erro": "Veículo não está disponivel para aluguer"
+            }), 409
 
     try:
         data_inicio_obj, data_fim_obj = validar_datas_reserva(
@@ -45,6 +38,15 @@ def criar_reserva(dados):
         )
     except ErroReserva as erro:
         return jsonify({"erro": erro.mensagem}), erro.status_code
+
+    if not veiculo_disponivel_no_periodo(
+        veiculo_id,
+        data_inicio_obj,
+        data_fim_obj
+    ):
+        return jsonify({
+            "erro" :"Veículo ja tem uma reserva para essas datas"
+        }), 409
 
     numero_dias = (data_fim_obj - data_inicio_obj).days
     valor_total = veiculo.valor_diaria * numero_dias
@@ -115,16 +117,15 @@ def alterar_reserva(dados, reserva_id):
     except ErroReserva as erro:
         return jsonify({"erro": erro.mensagem}), erro.status_code
 
-    conflito = Reserva.query.filter(
-        Reserva.veiculo_id == reserva.veiculo_id,
-        Reserva.estado == 'Ativa',
-        Reserva.id != reserva_id,
-        Reserva.data_inicio <=nova_data_fim,
-        Reserva.data_fim >= nova_data_inicio
-    ).first()
-
-    if conflito is not None:
-        return jsonify({"erro": "Já existe outra reserva para essas datas"}), 409
+    if not veiculo_disponivel_no_periodo(
+        reserva.veiculo_id,
+        data_inicio_obj,
+        data_fim_obj,
+        reserva_id
+    ):
+        return jsonify({
+            "erro": "Já existe outra reserva para essas datas"
+        }), 409
 
     veiculo = Veiculo.query.get(reserva.veiculo_id)
     numero_dias = (data_fim_obj - data_inicio_obj).days

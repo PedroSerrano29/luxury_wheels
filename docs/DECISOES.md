@@ -131,3 +131,14 @@
 ## Nota técnica: duplicação de código intencional (candidato a refactor)
 
 Existe pequena duplicação entre `buscarVeiculos()` (sem filtros) e a lógica de fetch dentro de `aplicarFiltro()` (com filtros) em `filtros.js`. Mantido assim deliberadamente por simplicidade nesta fase; candidato a unificação futura (`buscarVeiculos(filtros = {})` com parâmetro opcional).
+
+
+## Regras de reservas centralizadas em serviços
+
+**Contexto:** a validação das datas e a deteção de conflitos de reservas eram repetidas nos endpoints de criação e alteração.
+
+**Alternativas consideradas:** manter a lógica diretamente em cada rota Flask; ou extrair a lógica de negócio para um módulo de serviços reutilizável.
+
+**Escolha:** criar `backend/services/reservas_service.py`, com funções independentes de HTTP para validar datas e verificar a disponibilidade de um veículo num período.
+
+**Justificação:** evita duplicação de código, mantém as regras de negócio no backend Python e permite reutilizar a mesma lógica em futuros endpoints, na aplicação desktop e em testes automatizados.

@@ -28,6 +28,26 @@ def validar_datas_reserva(data_inicio, data_fim):
 
     return inicio, fim
 
+def veiculo_disponivel_no_periodo(
+        veiculo_id,
+        data_inicio,
+        data_fim,
+        reserva_a_ignorar_id=None
+):
+    consulta = Reserva.query.filter(
+        Reserva.veiculo_id == veiculo_id,
+        Reserva. estado == 'Ativa',
+        Reserva.data_inicio <= data_fim.isoformat(),
+        Reserva.data_fim >= data_inicio.isoformat()
+    )
+
+    if reserva_a_ignorar_id is not None:
+        consulta = consulta.filter(
+            Reserva.id != reserva_a_ignorar_id
+        )
+
+    return consulta.first() is None
+
 def calcular_orcamento_reserva(veiculo_id, data_inicio, data_fim):
     if not data_inicio or not data_fim:
         raise ErroReserva(
