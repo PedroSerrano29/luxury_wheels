@@ -78,23 +78,27 @@ def obter_veiculo(veiculo_id):
 ### POST /api/veiculos (criar) ###
 
 @veiculos_bp.route('/api/veiculos', methods=['POST'])
-def criar_veiculo():
-    dados = request.get_json()
+@token_obrigatorio
+def criar_veiculo(dados):
+    if dados.get('role') not in ('gestor','admin'):
+        return jsonify({"erro": "Ação não autorizada"}), 403
+
+    corpo = request.get_json()
 
     novo_veiculo = Veiculo(
-        marca=dados['marca'],
-        modelo=dados['modelo'],
-        matricula=dados.get('matricula'),
-        combustivel=dados.get('combustivel'),
-        categoria=dados['categoria'],
-        transmissao=dados['transmissao'],
-        tipo=dados['tipo'],
-        capacidade_pessoas=dados['capacidade_pessoas'],
-        valor_diaria=dados['valor_diaria'],
-        imagem_url=dados.get('imagem_url'),
-        data_ultima_revisao=dados.get('data_ultima_revisao'),
-        data_proxima_revisao=dados.get('data_proxima_revisao'),
-        data_ultima_inspecao=dados.get('data_ultima_inspecao'),
+        marca=corpo['marca'],   # <- dados['marca'] passa a corpo['marca']
+        modelo=corpo['modelo'],
+        matricula=corpo.get('matricula'),
+        combustivel=corpo.get('combustivel'),
+        categoria=corpo['categoria'],
+        transmissao=corpo['transmissao'],
+        tipo=corpo['tipo'],
+        capacidade_pessoas=corpo['capacidade_pessoas'],
+        valor_diaria=corpo['valor_diaria'],
+        imagem_url=corpo.get('imagem_url'),
+        data_ultima_revisao=corpo.get('data_ultima_revisao'),
+        data_proxima_revisao=corpo.get('data_proxima_revisao'),
+        data_ultima_inspecao=corpo.get('data_ultima_inspecao'),
     )
 
     db.session.add(novo_veiculo)
