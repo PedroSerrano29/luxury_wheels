@@ -48,21 +48,46 @@ def veiculo_disponivel_no_periodo(
 
     return consulta.first() is None
 
-def calcular_orcamento_reserva(veiculo_id, data_inicio, data_fim):
-    if not data_inicio or not data_fim:
+def calcular_orcamento_reserva(
+        veiculo_id,
+        data_inicio,
+        data_fim,
+        reserva_a_ignorar_id=None
+):
+    data_inicio_obj, data_fim_obj = validar_datas_reserva(
+        data_inicio,
+        data_fim
+    )
+
+    veiculo =Veiculo.query.get(veiculo_id)
+    if veiculo is None:
+        raise ErroReserva('Veículo não encontrado.', 404)
+
+    if not veiculo.ativo or veiculo.em_manutencao:
         raise ErroReserva(
-            'As datas de início e fim sao obrigatórias.'
+            'Veículo não está disponível para aluguer.',
+            409
         )
 
-    try:
-        inicio = dt.strptime(data_inicio, "%Y-%m-%d").date()
-        fim = dt.strptime(data_fim, "%Y-%m-%d").date()
-    except (TypeError, ValueError):
+    if not veiculo_disponivel_no_periodo(
+        veiculo_id,
+        data_inicio_obj,
+        data_fim_obj,
+        reserva_a_ignorar_id
+    ):
         raise ErroReserva(
-            'As datas devem estar no formato AAAA-MM-DD.'
+            'Veículo já tem uma reserva para essas datas.',
+            409
         )
 
-    if fim <= inicio:
-        raise ErroReserva(
-            'A data de fim deve ser posterior À data de início.'
-        )
+    numero_dias = (data_fim_obj - data_inicio_obj).days
+    valor_total = veiculo.valor_diaria * numero_dias
+
+    return {
+        'veiculo': veiculo,
+        'data_inicio': data_inicio_obj,
+        'data_fim': data_fim_obj,
+        'numero_dias': numero_dias,
+        'valor_diaria': veiculo.valor_diaria,
+        'valor_total': valor_total,
+    }

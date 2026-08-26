@@ -142,3 +142,13 @@ Existe pequena duplicação entre `buscarVeiculos()` (sem filtros) e a lógica d
 **Escolha:** criar `backend/services/reservas_service.py`, com funções independentes de HTTP para validar datas e verificar a disponibilidade de um veículo num período.
 
 **Justificação:** evita duplicação de código, mantém as regras de negócio no backend Python e permite reutilizar a mesma lógica em futuros endpoints, na aplicação desktop e em testes automatizados.
+
+## Âmbito alargado: Proposta A + Proposta B + Machine Learning
+
+**Contexto:** o enunciado pede a escolha de uma proposta (A ou B); decidi implementar a Proposta A
+como núcleo do projeto e adicionar a Proposta B como extensão comercial ("solução chave-na-mão"),
+mais um módulo de recomendação com scikit-learn (Fase 7).
+
+**Justificação:** ambas as propostas consomem a mesma API REST central, sem duplicar regras de
+negócio; o módulo de recomendação demonstra aplicação prática de ML supervisionado/não supervisionado
+sem sair do âmbito Python do curso, e aumenta o valor comercial percebido do produto final.

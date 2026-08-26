@@ -212,3 +212,10 @@ Reviso o teu código quando o colares ou anexares.
 Atualizo contigo a documentação relevante em docs/.
 
 Não precisas de seguir a ordem à risca — se um dia só tiveres energia para "só JS" ou "só desenhar BD", dizes-me e ajusto.
+
+FASE 7 (extensão) — Sistema de recomendação + polimento
+ Sistema de recomendação "veículos semelhantes" na página de detalhe: scikit-learn,
+   k-nearest neighbors sobre categoria/preço/capacidade. Endpoint novo GET /api/veiculos/<id>/similares,
+   cálculo feito inteiramente no backend; o frontend só recebe e apresenta a lista.
+ Gráficos no dashboard (Tkinter com matplotlib, ou Chart.js no website).
+ Rever documentação e preparar guião de defesa.
