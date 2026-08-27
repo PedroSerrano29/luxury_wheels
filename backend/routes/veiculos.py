@@ -109,44 +109,50 @@ def criar_veiculo(dados):
 ### PUT /api/veiculos/<id> (alterar) ###
 
 @veiculos_bp.route('/api/veiculos/<int:veiculo_id>', methods=['PUT'])
-def atualizar_veiculo(veiculo_id):
+@token_obrigatorio
+def atualizar_veiculo(dados, veiculo_id):
+    if dados.get('role') not in ('gestor','admin'):
+        return jsonify({"erro": "Ação não autorizada"}), 403
+
     v = Veiculo.query.get(veiculo_id)
 
     if v is None:
         return jsonify({"erro": "Veículo não encontrado"}), 404
 
-    dados = request.get_json()
 
-    if 'marca' in dados:
-        v.marca = dados['marca']
-    if 'modelo' in dados:
-        v.modelo = dados['modelo']
-    if 'valor_diaria' in dados:
-        v.valor_diaria = dados['valor_diaria']
-    if 'matricula' in dados:
-        v.matricula = dados['matricula']
-    if 'combustivel' in dados:
-        v.combustivel = dados['combustivel']
-    if 'categoria' in dados:
-        v.categoria = dados['categoria']
-    if 'transmissao' in dados:
-        v.transmissao = dados['transmissao']
-    if 'tipo' in dados:
-        v.tipo = dados['tipo']
-    if 'capacidade_pessoas' in dados:
-        v.capacidade_pessoas = dados['capacidade_pessoas']
-    if 'imagem_url' in dados:
-        v.imagem_url = dados['imagem_url']
-    if 'data_ultima_revisao' in dados:
-        v.data_ultima_revisao = dados['data_ultima_revisao']
-    if 'data_proxima_revisao' in dados:
-        v.data_proxima_revisao = dados['data_proxima_revisao']
-    if 'data_ultima_inspecao' in dados:
-        v.data_ultima_inspecao = dados['data_ultima_inspecao']
-    if 'disponivel' in dados:
-        v.disponivel = dados['disponivel']
-    if 'em_manutencao' in dados:
-        v.em_manutencao = dados['em_manutencao']
+
+    corpo = request.get_json()
+
+    if 'marca' in corpo:
+        v.marca = corpo['marca']
+    if 'modelo' in corpo:
+        v.modelo = corpo['modelo']
+    if 'valor_diaria' in corpo:
+        v.valor_diaria = corpo['valor_diaria']
+    if 'matricula' in corpo:
+        v.matricula = corpo['matricula']
+    if 'combustivel' in corpo:
+        v.combustivel = corpo['combustivel']
+    if 'categoria' in corpo:
+        v.categoria = corpo['categoria']
+    if 'transmissao' in corpo:
+        v.transmissao = corpo['transmissao']
+    if 'tipo' in corpo:
+        v.tipo = corpo['tipo']
+    if 'capacidade_pessoas' in corpo:
+        v.capacidade_pessoas = corpo['capacidade_pessoas']
+    if 'imagem_url' in corpo:
+        v.imagem_url = corpo['imagem_url']
+    if 'data_ultima_revisao' in corpo:
+        v.data_ultima_revisao = corpo['data_ultima_revisao']
+    if 'data_proxima_revisao' in corpo:
+        v.data_proxima_revisao = corpo['data_proxima_revisao']
+    if 'data_ultima_inspecao' in corpo:
+        v.data_ultima_inspecao = corpo['data_ultima_inspecao']
+    if 'disponivel' in corpo:
+        v.disponivel = corpo['disponivel']
+    if 'em_manutencao' in corpo:
+        v.em_manutencao = corpo['em_manutencao']
 
     db.session.commit()
 
@@ -154,7 +160,11 @@ def atualizar_veiculo(veiculo_id):
 
 ### Soft delete — PUT /api/veiculos/<id>/desativar ###
 @veiculos_bp.route('/api/veiculos/<int:veiculo_id>/desativar', methods=['PUT'])
-def desativar_veiculo(veiculo_id):
+@token_obrigatorio
+def desativar_veiculo(dados, veiculo_id):
+    if dados.get('role') not in ('gestor','admin'):
+        return jsonify({"erro": "Ação não autorizada"}), 403
+    
     v = Veiculo.query.get(veiculo_id)
     if v is None:
         return jsonify({"erro": "Veículo não encontrado"}), 404
