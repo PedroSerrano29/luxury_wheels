@@ -41,3 +41,15 @@ async function buscarVeiculo(id) {
         console.error('Erro:', erro);
     }
 }
+
+async function criarReserva(veiculoId, dataInicio, dataFim, formaPagamentoTipo) {
+    const resposta =await fetch('http://127.0.0.1:5000/api/reservas', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token')},
+        body: JSON.stringify({veiculo_id:veiculoId, data_inicio:dataInicio, data_fim:dataFim, forma_pagamento_tipo:formaPagamentoTipo})
+    });
+
+    const dados = await resposta.json();
+
+    return { ok: resposta.ok, dados: dados};
+}
