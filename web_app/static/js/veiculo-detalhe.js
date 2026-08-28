@@ -77,6 +77,14 @@ function montarPainelReserva(veiculo) {
     campoDataFim.appendChild(labelFim);
     campoDataFim.appendChild(inputFim);
     painel.appendChild(campoDataFim);
+
+    // Apresentar Opçoes de Pagamento
+    const opcoesPagamento = [
+        {valor: 'Cartão', texto: 'Cartão'},
+        {valor: 'MB Way', texto: 'MB Way'}
+    ];
+    const campoPagamento = criarCampoSelect('reserva-forma-pagamento', 'Forma de pagamento:', opcoesPagamento);
+    painel.appendChild(campoPagamento);
 }
 
 async function carregarDetalheVeiculo() {
