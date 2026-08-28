@@ -6,6 +6,7 @@ from services.reservas_service import (
     validar_datas_reserva,
     veiculo_disponivel_no_periodo
 )
+from services.pagamentos_service import obter_ou_criar_forma_pagamento
 
 reserva_bd = Blueprint('Reserva', __name__)
 
@@ -20,7 +21,7 @@ def criar_reserva(dados):
     veiculo_id = corpo.get('veiculo_id')
     data_inicio = corpo.get('data_inicio')
     data_fim = corpo.get('data_fim')
-    forma_pagamento_id = corpo.get('forma_pagamento_id')
+    forma_pagamento_tipo = corpo.get('forma_pagamento_tipo')
 
     veiculo = Veiculo.query.get(veiculo_id)
     if veiculo is None:
@@ -48,6 +49,8 @@ def criar_reserva(dados):
             "erro" :"Veículo ja tem uma reserva para essas datas"
         }), 409
 
+    forma = obter_ou_criar_forma_pagamento(cliente_id, forma_pagamento_tipo)
+
     numero_dias = (data_fim_obj - data_inicio_obj).days
     valor_total = veiculo.valor_diaria * numero_dias
 
@@ -57,7 +60,7 @@ def criar_reserva(dados):
         data_inicio=data_inicio,
         data_fim=data_fim,
         valor_total=valor_total,
-        forma_pagamento_id=forma_pagamento_id,
+        forma_pagamento_id=forma.id,
         estado='Ativa'
     )
 
