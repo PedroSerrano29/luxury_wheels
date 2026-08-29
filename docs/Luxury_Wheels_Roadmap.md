@@ -219,3 +219,10 @@ FASE 7 (extensão) — Sistema de recomendação + polimento
    cálculo feito inteiramente no backend; o frontend só recebe e apresenta a lista.
  Gráficos no dashboard (Tkinter com matplotlib, ou Chart.js no website).
  Rever documentação e preparar guião de defesa.
+
+ FASE 8 (extensão comercial, pós-MVP) — Maturidade "chave-na-mão"
+ Login/registo via Google OAuth, adicional ao login por email/password já existente.
+ Página de gestão de métodos de pagamento: cliente regista cartão/MB Way antes de reservar; a reserva passa a escolher entre métodos já guardados, com um predefinido.
+ Simulação de validação (limite de cartão fictício, "comunicação" simulada com MB Way) — sem gateway real, mantendo a decisão já registada de não processar pagamentos verdadeiros.
+ Emails transacionais (confirmação de reserva, recuperação de password) via SMTP/API, usando a conta luxurywheelspedroserrano@gmail.com — credenciais sempre em .env, nunca no código.
+  (nice to have) Mostrar datas já reservadas na página do veículo, para o cliente não escolher um período indisponível às cegas — versão simples: lista de intervalos reservados por baixo do formulário; versão completa: calendário próprio com dias desativados.

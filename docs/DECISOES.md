@@ -152,3 +152,11 @@ mais um módulo de recomendação com scikit-learn (Fase 7).
 **Justificação:** ambas as propostas consomem a mesma API REST central, sem duplicar regras de
 negócio; o módulo de recomendação demonstra aplicação prática de ML supervisionado/não supervisionado
 sem sair do âmbito Python do curso, e aumenta o valor comercial percebido do produto final.
+
+## Âmbito comercial: funcionalidades de maturidade adiadas para depois do MVP
+
+**Contexto:** ao construir o formulário de reserva, ficou claro que uma versão "chave-na-mão" precisa de mais do que o enunciado pede: login social (Google), métodos de pagamento pré-registados e validados (não escolhidos de novo a cada reserva), e emails transacionais (confirmação de reserva, recuperação de password) — já existe uma conta de email dedicada (`luxurywheelspedroserrano@gmail.com`) reservada para isto.
+
+**Escolha:** manter o MVP atual (forma de pagamento escolhida por tipo, criada/reaproveitada na hora) como base funcional dentro do prazo do curso, e registar estas funcionalidades como Fase 8 do roadmap, a implementar depois de Propostas A+B+ML estarem concluídas e testadas.
+
+**Justificação:** o prazo do curso não permite integrar OAuth, envio de emails e simulação de validação de pagamento sem comprometer o essencial exigido no enunciado. Documentar esta visão comercial mostra maturidade de produto na defesa de tese, sem arriscar o prazo de entrega.
