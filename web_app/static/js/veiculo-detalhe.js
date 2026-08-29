@@ -78,13 +78,56 @@ function montarPainelReserva(veiculo) {
     campoDataFim.appendChild(inputFim);
     painel.appendChild(campoDataFim);
 
-    // Apresentar Opçoes de Pagamento
+    // Apresenta Opçoes de Pagamento
     const opcoesPagamento = [
         {valor: 'Cartão', texto: 'Cartão'},
         {valor: 'MB Way', texto: 'MB Way'}
     ];
     const campoPagamento = criarCampoSelect('reserva-forma-pagamento', 'Forma de pagamento:', opcoesPagamento);
     painel.appendChild(campoPagamento);
+
+    // Apresenta total da Reserva
+    const totalReserva = document.createElement('p');
+    totalReserva.id = 'reserva-total';
+    painel.appendChild(totalReserva);
+
+    function atualizarTotal() {
+        const inicio = new Date(inputInicio.value);
+        const fim = new Date(inputFim.value)
+        const numeroDias = (fim - inicio) / (1000 * 60 * 60 * 24); // ms → segundos → minutos → horas → dias
+
+        if (numeroDias > 0) {
+            totalReserva.textContent = `Total: ${numeroDias * veiculo.valor_diaria}€`;
+        } else {
+            totalReserva.textContent = '';
+        }
+        
+    }
+    inputInicio.addEventListener('change', atualizarTotal);
+    inputFim.addEventListener('change', atualizarTotal);
+
+    // Botão de confirmar reserva
+    const botaoConfirmar = document.createElement('button');
+    botaoConfirmar.textContent = 'Confirmar reserva';
+    botaoConfirmar.className = 'botao-principal';
+    painel.appendChild(botaoConfirmar);
+
+    const mensagemReserva = document.createElement('p');
+    mensagemReserva.id = 'reserva-mensagem';
+    painel.appendChild(mensagemReserva);
+
+    botaoConfirmar.addEventListener('click', async () => {
+        const dataInicio = inputInicio.value;
+        const dataFim = inputFim.value;
+        const formaPagamento = document.getElementById('reserva-forma-pagamento').value;
+        const resultado = await criarReserva(veiculo.id, dataInicio, dataFim, formaPagamento);
+        
+        if (!resultado.ok) {
+            mensagemReserva.textContent = resultado.dados.erro;
+        } else {
+             mensagemReserva.textContent = "Reserva criada com sucesso!";
+        }
+    });
 }
 
 async function carregarDetalheVeiculo() {
