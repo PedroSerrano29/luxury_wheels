@@ -53,3 +53,14 @@ async function criarReserva(veiculoId, dataInicio, dataFim, formaPagamentoTipo) 
 
     return { ok: resposta.ok, dados: dados};
 }
+
+async function buscarReservas() {
+    const resposta =await fetch('http://127.0.0.1:5000/api/reservas', {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token')},
+    });
+
+    const dados = await resposta.json();
+
+    return { ok: resposta.ok, dados: dados};
+}
