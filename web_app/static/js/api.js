@@ -64,3 +64,15 @@ async function buscarReservas() {
 
     return { ok: resposta.ok, dados: dados};
 }
+
+async function cancelarReserva(reservaId) {
+    const resposta =await fetch(`http://127.0.0.1:5000/api/reservas/${reservaId}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json', 'Authorization': localStorage.getItem('token')},
+        body: JSON.stringify({cancelar: true})
+    });
+
+    const dados = await resposta.json();
+
+    return { ok: resposta.ok, dados: dados};
+}

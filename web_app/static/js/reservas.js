@@ -25,6 +25,8 @@ function criarCartaoReserva(reserva) {
     titulo.textContent = `${reserva.veiculo.marca} ${reserva.veiculo.modelo}`;
     card.appendChild(titulo);
 
+    card.appendChild(criarLinha('Matrícula', reserva.veiculo.matricula));
+
     card.appendChild(criarLinha('Data início', reserva.data_inicio));
 
     card.appendChild(criarLinha('Data fim', reserva.data_fim));
