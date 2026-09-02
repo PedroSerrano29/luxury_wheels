@@ -234,3 +234,11 @@ body {
     background-color: var(--dourado);
     color: var(--azul-petroleo);
 }
+
+.reserva-card {
+    border: 1px solid #ccc;
+    border-left: 4px solid var(--dourado);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 4px;
+}

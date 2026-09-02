@@ -36,7 +36,21 @@ function criarCartaoReserva(reserva) {
     card.appendChild(criarLinha('Estado', reserva.estado));
 
     if (reserva.estado === 'Ativa') {
+        // Botão de Cancelar reserva
+        const botaoCancelar = document.createElement('button');
+        botaoCancelar.textContent = 'Cancelar';
+        botaoCancelar.className = 'botao-principal';
+        card.appendChild(botaoCancelar);
 
+        botaoCancelar.addEventListener('click', async () => {
+            const resultado = await cancelarReserva(reserva.id)
+            
+            if (!resultado.ok) {
+                alert(resultado.dados.erro);
+            } else {
+                carregarReservas();
+            }
+        });
     }
 
     return card
