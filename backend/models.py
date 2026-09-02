@@ -89,6 +89,7 @@ class Reserva(db.Model):
             "forma_pagamento_id": self.forma_pagamento_id,
             "estado": self.estado,
             "data_criacao": self.data_criacao,
+            "veiculo": self.veiculo.to_dict(),
         }
 
 class Utilizador(db.Model):
