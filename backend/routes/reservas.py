@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
+from datetime import date
 from models import db, Reserva, Veiculo
 from auth_utils import token_obrigatorio
 from services.reservas_service import (
@@ -101,6 +102,9 @@ def alterar_reserva(dados, reserva_id):
 
     corpo = request.get_json()
     if corpo.get('cancelar'):
+        if reserva.calcular_estado() != 'Reservada':
+            return jsonify({"erro": "Só pode ser cancelada antes da reserva começar"}), 409
+
         reserva.estado = 'Cancelada'
 
         veiculo = Veiculo.query.get(reserva.veiculo_id)
@@ -109,16 +113,21 @@ def alterar_reserva(dados, reserva_id):
         db.session.commit()
         return jsonify({"mensagem": "Reserva cancelada com sucesso"})
 
-    nova_data_inicio = corpo.get('data_inicio', reserva.data_inicio)
+    if reserva.calcular_estado() != 'Ativa':
+        return jsonify({"erro": "Só é possivel alterar a data de fim de uma reserva Ativa"}), 409
+
     nova_data_fim = corpo.get('data_fim', reserva.data_fim)
 
     try:
         data_inicio_obj, data_fim_obj = validar_datas_reserva(
-            nova_data_inicio,
+            reserva.data_inicio,
             nova_data_fim
         )
     except ErroReserva as erro:
         return jsonify({"erro": erro.mensagem}), erro.status_code
+
+    if data_fim_obj < date.today():
+        return jsonify({"erro": "A nova data de fim não pode ser anterior a hoje"}), 400
 
     if not veiculo_disponivel_no_periodo(
         reserva.veiculo_id,
@@ -133,7 +142,6 @@ def alterar_reserva(dados, reserva_id):
     veiculo = Veiculo.query.get(reserva.veiculo_id)
     numero_dias = (data_fim_obj - data_inicio_obj).days
 
-    reserva.data_inicio = nova_data_inicio
     reserva.data_fim = nova_data_fim
     reserva.valor_total = veiculo.valor_diaria * numero_dias
 
