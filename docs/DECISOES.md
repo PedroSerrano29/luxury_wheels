@@ -160,3 +160,57 @@ sem sair do âmbito Python do curso, e aumenta o valor comercial percebido do pr
 **Escolha:** manter o MVP atual (forma de pagamento escolhida por tipo, criada/reaproveitada na hora) como base funcional dentro do prazo do curso, e registar estas funcionalidades como Fase 8 do roadmap, a implementar depois de Propostas A+B+ML estarem concluídas e testadas.
 
 **Justificação:** o prazo do curso não permite integrar OAuth, envio de emails e simulação de validação de pagamento sem comprometer o essencial exigido no enunciado. Documentar esta visão comercial mostra maturidade de produto na defesa de tese, sem arriscar o prazo de entrega.
+
+---
+
+## Rotas de gestão de veículos protegidas por autenticação e role
+
+**Contexto:** `POST/PUT /api/veiculos` e `PUT /api/veiculos/<id>/desativar` não tinham nenhuma proteção — qualquer pedido, sem sessão nenhuma, conseguia criar, alterar ou desativar veículos da frota. Só o `DELETE` (hard delete) já estava protegido.
+
+**Escolha:** as três rotas passaram a exigir `@token_obrigatorio` e a verificar `dados.get('role') in ('gestor', 'admin')` — o mesmo padrão já usado no `DELETE`, mas menos restritivo (gestor ou admin, não só admin), porque gerir o dia a dia da frota deve estar acessível aos gestores.
+
+**Justificação:** corrige uma falha de segurança real, e alinha esta parte da API com a decisão já registada de que a gestão da frota é uma operação de staff (Proposta B), nunca acessível a um cliente comum ou a um visitante não autenticado.
+
+---
+
+## Forma de pagamento resolvida pelo tipo, não pelo id, no momento da reserva
+
+**Contexto:** a tabela `formas_pagamento` já existia no modelo de dados, mas não havia nenhuma rota nem ecrã para o cliente registar previamente um método de pagamento — e a criação de reserva exige um `forma_pagamento_id` válido (chave estrangeira obrigatória). Construir primeiro um ecrã completo de gestão de métodos de pagamento (adiado para a Fase 8) bloquearia todo o fluxo de reserva.
+
+**Alternativas consideradas:** (1) exigir do frontend um `forma_pagamento_id` já existente, o que implicava construir a gestão de métodos de pagamento antes de conseguir reservar seja o que for; (2) o cliente escolhe só o *tipo* (`"Cartão"`, `"MB Way"`) no próprio formulário de reserva, e o backend resolve ou cria a linha correspondente.
+
+**Escolha:** o frontend envia `forma_pagamento_tipo` (uma string); a rota `criar_reserva` chama `obter_ou_criar_forma_pagamento(cliente_id, tipo)` (em `backend/services/pagamentos_service.py`), que procura uma `FormaPagamento` existente para aquele cliente e tipo, e só cria uma nova se não existir. Usa `db.session.flush()` (não `commit()`) para obter o `id` da forma de pagamento nova de imediato, sem fechar a transação — o `commit()` definitivo só acontece depois, junto com a criação da própria reserva, para que as duas operações sejam atómicas (ou ambas são gravadas, ou nenhuma é).
+
+**Justificação:** desbloqueia o fluxo de reserva sem depender da Fase 8 estar pronta, evita duplicar linhas de `formas_pagamento` para o mesmo cliente e tipo, e mantém a lógica no backend — o frontend nunca decide nem inventa nenhum `id`.
+
+---
+
+## Estados de reserva calculados a partir das datas, não gravados como valor fixo
+
+**Contexto:** o campo `estado` de uma `Reserva` só distinguia `'Ativa'`/`'Cancelada'`, definido manualmente em cada ação. Isto não refletia se uma reserva já tinha terminado (`data_fim` no passado), nem impedia ações que já não faziam sentido — por exemplo, cancelar uma reserva que já estava a decorrer, ou alterar as datas de uma que ainda nem tinha começado.
+
+**Alternativas consideradas:** (1) manter `estado` como campo simples, atualizado por uma tarefa periódica (scheduler/cron) que percorre as reservas e as atualiza; (2) calcular o estado dinamicamente, sempre que é pedido, comparando as datas gravadas com a data de hoje — sem processo nenhum a correr em segundo plano.
+
+**Escolha:** um método `calcular_estado()` no modelo `Reserva` (`backend/models.py`). Se o campo `estado` gravado for `'Cancelada'`, devolve isso diretamente — é a única transição manual que continua a existir. Caso contrário, deriva o estado comparando `date.today()` com o período da reserva: `'Reservada'` (hoje ainda não chegou à `data_inicio`), `'Ativa'` (hoje está dentro do período, incluindo o próprio dia de `data_fim`), ou `'Concluída'` (já passou a `data_fim`). O `to_dict()` expõe sempre este valor calculado — nunca o campo em bruto — por isso nenhum consumidor da API (frontend do website, ou futuramente o dashboard da app desktop) precisa de saber que este cálculo existe.
+
+**Justificação:** sem precisar de nenhum scheduler, o estado está sempre correto em qualquer pedido à API, por mais tempo que passe sem ninguém mexer na reserva. A mesma lógica vai ser reutilizada tal e qual no dashboard da Proposta B, para agregações por estado (reservas ativas, concluídas do mês, etc.).
+
+---
+
+## Regras de cancelar/alterar reserva ligadas ao estado calculado, aplicadas no backend
+
+**Contexto:** com os estados calculados definidos, foi preciso decidir em que momento do ciclo de vida de uma reserva cada ação é permitida.
+
+**Escolha:** só é possível **cancelar** uma reserva no estado `'Reservada'` (antes de começar). Só é possível **alterar** — e só a `data_fim`, nunca a `data_inicio` — de uma reserva no estado `'Ativa'`, e a nova `data_fim` nunca pode ser anterior a hoje. Ambas as regras são verificadas dentro da rota `PUT /api/reservas/<id>`, devolvendo `409 Conflict` quando violadas — não são só uma condição a esconder um botão no frontend.
+
+**Justificação:** esconder um botão no frontend é só conveniência de interface; sem a verificação replicada no backend, um pedido direto à API (`curl`, Postman) continuaria a conseguir cancelar uma reserva a decorrer ou alterar datas de uma já concluída. Reforça, mais uma vez, o princípio seguido desde o início: o backend decide, o frontend só mostra e recolhe input. Testado manualmente com `curl` para os três casos (cancelar Ativa → bloqueado; alterar datas de Reservada → bloqueado; alterar `data_fim` de Ativa → sucesso, com recálculo correto do `valor_total`).
+
+---
+
+## Componentes de DOM partilhados entre páginas (`dom-utils.js`)
+
+**Contexto:** a função `criarLinha(rotulo, valor)` (gera um parágrafo `"Rótulo: valor"`) foi escrita para a página de detalhe do veículo, mas a página "Minhas Reservas" precisava exatamente da mesma coisa.
+
+**Escolha:** extraída para um ficheiro novo, `web_app/static/js/dom-utils.js`, incluído em qualquer página HTML que precise de construir este tipo de linha — hoje `veiculo.html` e `minhas-reservas.html`. `api.js` mantém-se reservado só para funções `fetch()`, como já estava documentado; helpers de construção de DOM ficam à parte.
+
+**Justificação:** evita duplicar a mesma função em dois ficheiros `.js` — o mesmo princípio DRY já aplicado ao `filtros.js` (reaproveitado para o `<select>` de forma de pagamento no formulário de reserva).

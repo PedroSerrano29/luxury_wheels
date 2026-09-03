@@ -142,7 +142,7 @@ Skill em foco: SQL (schema design), SQLAlchemy ORM.
 FASE 1 — Backend API: Veículos e Autenticação (Semana 2-3)
  Endpoint GET /api/veiculos com filtros (categoria, transmissão, tipo, valor, pessoas).
  Endpoint GET /api/veiculos/<id>.
- Endpoints POST/PUT/DELETE /api/veiculos (para o desktop, protegidos por auth de staff).
+ Endpoints POST/PUT/DELETE /api/veiculos (para o desktop, protegidos por auth de staff). ✅ Feito — POST/PUT/desativar exigem token + role gestor/admin; DELETE exige role admin.
  POST /api/auth/registo e POST /api/auth/login (clientes) — hash de password com werkzeug.security.
  Testar tudo com curl ou Postman/Thunder Client antes de qualquer frontend.
  Documentar cada endpoint em docs/API.md à medida que o crias.
@@ -150,20 +150,23 @@ FASE 1 — Backend API: Veículos e Autenticação (Semana 2-3)
 Skill em foco: Flask routing, REST design, segurança básica (hashing).
 
 FASE 2 — Backend API: Reservas e regras de negócio (Semana 3-4)
- POST /api/reservas — calcula valor total, marca veículo indisponível, valida datas.
- PUT /api/reservas/<id> — alterar datas ou cancelar (liberta o veículo se cancelado).
- GET /api/reservas?cliente_id= — histórico do cliente.
+ POST /api/reservas — calcula valor total, marca veículo indisponível, valida datas. ✅ Feito, incluindo resolução da forma de pagamento por tipo (get-or-create).
+ PUT /api/reservas/<id> — alterar datas ou cancelar (liberta o veículo se cancelado). ✅ Feito, e evoluído: agora só permite cancelar reservas "Reservada" e só permite alterar a data_fim de reservas "Ativa" (nunca a data_inicio), com a nova data_fim nunca podendo ser anterior a hoje.
+ GET /api/reservas?cliente_id= — histórico do cliente. ✅ Feito (cliente_id vem sempre do token, não é um parâmetro do pedido).
+ ✅ Adicionado (não estava no plano original): estado da reserva (Reservada/Ativa/Concluída/Cancelada) deixou de ser um campo fixo e passou a ser calculado a partir das datas — ver DECISOES.md.
  Job/rotina que marca veículos indisponíveis por revisão/inspeção vencida (pode ser uma função chamada a cada pedido, não precisa de scheduler já).
- Escrever 3-5 testes simples com pytest para as regras de negócio (ótimo ponto para a tese: "testei as regras críticas").
+ Escrever 3-5 testes simples com pytest para as regras de negócio (ótimo ponto para a tese: "testei as regras críticas") — por fazer; até agora testado manualmente com curl.
 
 Skill em foco: lógica de negócio, datas em Python (datetime), testes automatizados.
 
 FASE 3 — Website: estrutura e JavaScript (Semana 4-5)
- HTML das páginas: login/registo, listagem+filtros de veículos, detalhe do veículo, reserva, "as minhas reservas".
- api.js: funções fetch() reutilizáveis (GET/POST com tratamento de erro).
- pesquisa.js: filtros dinâmicos sem recarregar a página (event listeners, atualizar DOM).
- auth.js: login guarda token (localStorage não existe nos artifacts do Claude, mas no teu site real podes usá-lo), redireciona.
- reserva.js: calcular e mostrar valor total em tempo real conforme o cliente muda as datas.
+ HTML das páginas: login/registo, listagem+filtros de veículos, detalhe do veículo, reserva, "as minhas reservas". ✅ Feito — todas as páginas existem e funcionam, incluindo minhas-reservas.html.
+ api.js: funções fetch() reutilizáveis (GET/POST com tratamento de erro). ✅ Feito — buscarVeiculos, buscarVeiculo, loginCliente, registarCliente, criarReserva, buscarReservas, cancelarReserva.
+ pesquisa.js: filtros dinâmicos sem recarregar a página (event listeners, atualizar DOM). ✅ Feito, em filtros.js.
+ auth.js: login guarda token (localStorage não existe nos artifacts do Claude, mas no teu site real podes usá-lo), redireciona. ✅ Feito.
+ reserva.js: calcular e mostrar valor total em tempo real conforme o cliente muda as datas. ✅ Feito — acabou por ficar dentro de veiculo-detalhe.js (montarPainelReserva) em vez de um ficheiro reserva.js à parte, já que a lógica está diretamente ligada ao resto do painel de reserva dessa página.
+ ✅ Adicionado (não estava no plano original): dom-utils.js — funções de construção de DOM partilhadas entre páginas (criarLinha), extraídas para evitar duplicação entre veiculo-detalhe.js e reservas.js.
+ ✅ Adicionado: reservas.js — lista as reservas do cliente (cartões com matrícula, datas, valor, estado), com botão de cancelar e verificação de sessão (redireciona para login se o token não existir ou tiver expirado).
 
 Skill em foco: DOM, fetch/promises/async-await, eventos JS, CSS responsivo.
 
@@ -226,3 +229,13 @@ FASE 7 (extensão) — Sistema de recomendação + polimento
  Simulação de validação (limite de cartão fictício, "comunicação" simulada com MB Way) — sem gateway real, mantendo a decisão já registada de não processar pagamentos verdadeiros.
  Emails transacionais (confirmação de reserva, recuperação de password) via SMTP/API, usando a conta luxurywheelspedroserrano@gmail.com — credenciais sempre em .env, nunca no código.
   (nice to have) Mostrar datas já reservadas na página do veículo, para o cliente não escolher um período indisponível às cegas — versão simples: lista de intervalos reservados por baixo do formulário; versão completa: calendário próprio com dias desativados.
+
+FASE 3 (continuação) — Refinamentos identificados ao testar "Minhas Reservas"
+
+O backend dos estados calculados (Reservada/Ativa/Concluída/Cancelada) já está feito e protegido (ver DECISOES.md). Falta o frontend acompanhar:
+
+ Trocar a condição única `if (reserva.estado === 'Ativa')` em reservas.js por duas condições separadas: botão "Cancelar" só quando o estado calculado for 'Reservada', botão "Alterar" só quando for 'Ativa'.
+ Construir a UI do botão "Alterar": input de nova data_fim + função alterarReserva(reservaId, novaDataFim) em api.js (PUT /api/reservas/<id>, já existe e já está protegido no backend).
+ Layout em tabela para "Minhas Reservas" em vez dos cartões atuais: colunas Matrícula | Marca | Modelo | Data Início | Data Fim | Valor Total | Estado | [Cancelar] | [Alterar] (as duas últimas colunas sem cabeçalho).
+ Filtro e ordenação da tabela (nem que seja só por estado, para começar).
+ Deteção proativa de sessão expirada: hoje, o navbar.js só verifica se existe um token no localStorage, não se ainda é válido — por isso um utilizador com token expirado continua a ver-se como autenticado até tentar fazer alguma ação. Descodificar o campo exp do JWT (é só Base64, sem biblioteca nenhuma) e comparar com a hora atual permite detetar isto mais cedo e fazer logout automático. Importante para a defesa: isto é só para a experiência do utilizador, a validação a sério continua sempre a acontecer no backend.
