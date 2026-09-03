@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, date
 
 db = SQLAlchemy()
 
@@ -78,6 +79,21 @@ class Reserva(db.Model):
     veiculo = db.relationship('Veiculo')
     forma_pagamento = db.relationship('FormaPagamento')
 
+    def calcular_estado(self):
+        if self.estado == 'Cancelada':
+            return 'Cancelada'
+
+        inicio = datetime.strptime(self.data_inicio, "%Y-%m-%d").date()
+        fim = datetime.strptime(self.data_fim, "%Y-%m-%d").date()
+        hoje = date.today()
+
+        if hoje < inicio:
+            return 'Reservada'
+        elif hoje <= fim:
+            return 'Ativa'
+        else:
+            return 'Concluída'
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -87,7 +103,7 @@ class Reserva(db.Model):
             "data_fim": self.data_fim,
             "valor_total": self.valor_total,
             "forma_pagamento_id": self.forma_pagamento_id,
-            "estado": self.estado,
+            "estado": self.calcular_estado(),
             "data_criacao": self.data_criacao,
             "veiculo": self.veiculo.to_dict(),
         }
