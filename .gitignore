@@ -18,3 +18,7 @@ database/*.sqlite3
 
 # Notas
 docs/COMANDOS.md
+
+# Documentação de trabalho — só backup local, nunca no repositório público
+# (o único ficheiro de docs/ que vai para o repo real é o relatório Word final, ex: docs/*.docx)
+docs/*.md
