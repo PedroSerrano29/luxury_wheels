@@ -113,14 +113,19 @@ def alterar_reserva(dados, reserva_id):
         db.session.commit()
         return jsonify({"mensagem": "Reserva cancelada com sucesso"})
 
-    if reserva.calcular_estado() != 'Ativa':
-        return jsonify({"erro": "Só é possivel alterar a data de fim de uma reserva Ativa"}), 409
+    estado_atual = reserva.calcular_estado()
+    if estado_atual not in ('Reservada', 'Ativa'):
+        return jsonify({"erro": "Só é possivel alterar reservas nos estados Reservada ou Ativa"}), 409
 
+    nova_data_inicio = corpo.get('data_inicio', reserva.data_inicio)
     nova_data_fim = corpo.get('data_fim', reserva.data_fim)
+
+    if estado_atual == 'Ativa' and nova_data_inicio != reserva.data_inicio:
+        return jsonify({"erro": "Não é possivel alterar a data de início de uma reserva Ativa"}), 409
 
     try:
         data_inicio_obj, data_fim_obj = validar_datas_reserva(
-            reserva.data_inicio,
+            nova_data_inicio,
             nova_data_fim
         )
     except ErroReserva as erro:
@@ -128,6 +133,9 @@ def alterar_reserva(dados, reserva_id):
 
     if data_fim_obj < date.today():
         return jsonify({"erro": "A nova data de fim não pode ser anterior a hoje"}), 400
+
+    if estado_atual == 'Reservada' and data_inicio_obj < date.today():
+        return jsonify({"erro": "A nova data de início não pode ser anterior a hoje"}), 400
 
     if not veiculo_disponivel_no_periodo(
         reserva.veiculo_id,
@@ -142,6 +150,7 @@ def alterar_reserva(dados, reserva_id):
     veiculo = Veiculo.query.get(reserva.veiculo_id)
     numero_dias = (data_fim_obj - data_inicio_obj).days
 
+    reserva.data_inicio = nova_data_inicio
     reserva.data_fim = nova_data_fim
     reserva.valor_total = veiculo.valor_diaria * numero_dias
 
