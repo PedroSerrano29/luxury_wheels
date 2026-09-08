@@ -51,6 +51,47 @@ function criarCartaoReserva(reserva) {
                 carregarReservas();
             }
         });
+
+        const botaoAlterar = document.createElement('button');
+        botaoAlterar.textContent = 'Alterar';
+        botaoAlterar.className = 'botao-principal';
+        card.appendChild(botaoAlterar);
+
+        const inputInicio = document.createElement('input');
+        inputInicio.type = 'date';
+        inputInicio.value = reserva.data_inicio;
+        inputInicio.hidden = true;
+        card.appendChild(inputInicio);
+
+        const inputFim = document.createElement('input');
+        inputFim.type = 'date';
+        inputFim.value = reserva.data_fim;
+        inputFim.hidden = true;
+        card.appendChild(inputFim);
+
+        const botaoGuardar = document.createElement('button');
+        botaoGuardar.textContent = 'Guardar';
+        botaoGuardar.className = 'botao-principal';
+        botaoGuardar.hidden = true;
+        card.appendChild(botaoGuardar);
+
+        botaoAlterar.addEventListener('click', () => {
+            botaoCancelar.hidden = true;
+            botaoAlterar.hidden = true;
+            inputInicio.hidden = false;
+            inputFim.hidden = false;
+            botaoGuardar.hidden = false;
+        });
+
+        botaoGuardar.addEventListener('click', async () => {
+            const resultado = await alterarReserva(reserva.id, inputInicio.value, inputFim.value);
+
+            if(!resultado.ok) {
+                alert(resultado.dados.erro);
+            } else {
+                carregarReservas();
+            }
+        });
     }
 
     if (reserva.estado === 'Ativa') {
