@@ -36,22 +36,6 @@ function criarCartaoReserva(reserva) {
     card.appendChild(criarLinha('Estado', reserva.estado));
 
     if (reserva.estado === 'Reservada') {
-        // Botão de Cancelar reserva
-        const botaoCancelar = document.createElement('button');
-        botaoCancelar.textContent = 'Cancelar';
-        botaoCancelar.className = 'botao-principal';
-        card.appendChild(botaoCancelar);
-
-        botaoCancelar.addEventListener('click', async () => {
-            const resultado = await cancelarReserva(reserva.id)
-            
-            if (!resultado.ok) {
-                alert(resultado.dados.erro);
-            } else {
-                carregarReservas();
-            }
-        });
-
         const botaoAlterar = document.createElement('button');
         botaoAlterar.textContent = 'Alterar';
         botaoAlterar.className = 'botao-principal';
@@ -75,6 +59,24 @@ function criarCartaoReserva(reserva) {
         botaoGuardar.hidden = true;
         card.appendChild(botaoGuardar);
 
+        // Botão de Cancelar reserva
+        const botaoCancelar = document.createElement('button');
+        botaoCancelar.textContent = 'Cancelar';
+        botaoCancelar.className = 'botao-principal';
+        card.appendChild(botaoCancelar);
+
+        botaoCancelar.addEventListener('click', async () => {
+            const resultado = await cancelarReserva(reserva.id)
+            
+            if (!resultado.ok) {
+                alert(resultado.dados.erro);
+            } else {
+                carregarReservas();
+            }
+        });
+
+
+
         botaoAlterar.addEventListener('click', () => {
             botaoCancelar.hidden = true;
             botaoAlterar.hidden = true;
@@ -95,14 +97,31 @@ function criarCartaoReserva(reserva) {
     }
 
     if (reserva.estado === 'Ativa') {
-        const botaoTerminar = document. createElement('button');
-        botaoTerminar.textContent = 'Terminar';
-        botaoTerminar.className = 'botao-principal';
-        card.appendChild(botaoTerminar);
+        const botaoAlterar = document. createElement('button');
+        botaoAlterar.textContent = 'Alterar';
+        botaoAlterar.className = 'botao-principal';
+        card.appendChild(botaoAlterar);
 
-        botaoTerminar.addEventListener('click', async () => {
-            const hoje = new Date().toISOString().slice(0, 10);
-            const resultado = await alterarReserva(reserva.id, null, hoje);
+        const inputFim = document.createElement('input');
+        inputFim.type = 'date';
+        inputFim.value = reserva.data_fim;
+        inputFim.hidden = true;
+        card.appendChild(inputFim);
+
+        const botaoGuardar = document.createElement('button');
+        botaoGuardar.textContent = 'Guardar';
+        botaoGuardar.className = 'botao-principal';
+        botaoGuardar.hidden = true;
+        card.appendChild(botaoGuardar);
+
+        botaoAlterar.addEventListener('click', async () => {
+            botaoAlterar.hidden = true;
+            inputFim.hidden = false;
+            botaoGuardar.hidden = false;
+        });
+
+        botaoGuardar.addEventListener('click', async () => {
+            const resultado = await alterarReserva(reserva.id, null, inputFim.value);
 
             if (!resultado.ok) {
                 alert(resultado.dados.erro);
