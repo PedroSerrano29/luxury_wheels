@@ -15,55 +15,79 @@ async function carregarReservas() {
     desenharReservas(resultado.dados);
 }
 
+// criar funcao para criar cabeçalho da tabela
+
+function criarCabecalhoTabela() {
+    const thead = document.createElement('thead');
+    const tr = document.createElement('tr');
+
+    const colunas = ['Matrícula', 'Marca', 'Modelo', 'Data Início', 'Data Fim', 'Valor Total', 'Estado', '', ''];
+
+    colunas.forEach(coluna => {
+        const th = document.createElement('th');
+        th.textContent = coluna;
+        tr.appendChild(th);
+    });
+
+    thead.appendChild(tr);
+    return thead;
+}
+
 // criar funcao para listar reservas
 
-function criarCartaoReserva(reserva) {
-    const card = document.createElement('div');
-    card.className = 'reserva-card';
+function criarLinhaReserva(reserva) {
+    const tr = document.createElement('tr');
 
-    const titulo = document.createElement('h3');
-    titulo.textContent = `${reserva.veiculo.marca} ${reserva.veiculo.modelo}`;
-    card.appendChild(titulo);
+    const valores = [
+        reserva.veiculo.matricula,
+        reserva.veiculo.marca,
+        reserva.veiculo.modelo,
+        reserva.data_inicio,
+        reserva.data_fim,
+        `${reserva.valor_total}€`,
+        reserva.estado
+    ];
 
-    card.appendChild(criarLinha('Matrícula', reserva.veiculo.matricula));
+    valores.forEach(valor => {
+        const td = document.createElement('td');
+        td.textContent = valor;
+        tr.appendChild(td);
+    });
 
-    card.appendChild(criarLinha('Data início', reserva.data_inicio));
-
-    card.appendChild(criarLinha('Data fim', reserva.data_fim));
-
-    card.appendChild(criarLinha('Valor total', `${reserva.valor_total}€`))
-
-    card.appendChild(criarLinha('Estado', reserva.estado));
+    const tdAlterar = document.createElement('td');
+    const tdCancelar = document.createElement('td');
+    tr.appendChild(tdAlterar);
+    tr.appendChild(tdCancelar);
 
     if (reserva.estado === 'Reservada') {
         const botaoAlterar = document.createElement('button');
         botaoAlterar.textContent = 'Alterar';
         botaoAlterar.className = 'botao-principal';
-        card.appendChild(botaoAlterar);
+        tdAlterar.appendChild(botaoAlterar);
 
         const inputInicio = document.createElement('input');
         inputInicio.type = 'date';
         inputInicio.value = reserva.data_inicio;
         inputInicio.hidden = true;
-        card.appendChild(inputInicio);
+        tdAlterar.appendChild(inputInicio);
 
         const inputFim = document.createElement('input');
         inputFim.type = 'date';
         inputFim.value = reserva.data_fim;
         inputFim.hidden = true;
-        card.appendChild(inputFim);
+        tdAlterar.appendChild(inputFim);
 
         const botaoGuardar = document.createElement('button');
         botaoGuardar.textContent = 'Guardar';
         botaoGuardar.className = 'botao-principal';
         botaoGuardar.hidden = true;
-        card.appendChild(botaoGuardar);
+        tdAlterar.appendChild(botaoGuardar);
 
         // Botão de Cancelar reserva
         const botaoCancelar = document.createElement('button');
         botaoCancelar.textContent = 'Cancelar';
         botaoCancelar.className = 'botao-principal';
-        card.appendChild(botaoCancelar);
+        tdCancelar.appendChild(botaoCancelar);
 
         botaoCancelar.addEventListener('click', async () => {
             const resultado = await cancelarReserva(reserva.id)
@@ -74,8 +98,6 @@ function criarCartaoReserva(reserva) {
                 carregarReservas();
             }
         });
-
-
 
         botaoAlterar.addEventListener('click', () => {
             botaoCancelar.hidden = true;
@@ -100,21 +122,21 @@ function criarCartaoReserva(reserva) {
         const botaoAlterar = document. createElement('button');
         botaoAlterar.textContent = 'Alterar';
         botaoAlterar.className = 'botao-principal';
-        card.appendChild(botaoAlterar);
+        tdAlterar.appendChild(botaoAlterar);
 
         const inputFim = document.createElement('input');
         inputFim.type = 'date';
         inputFim.value = reserva.data_fim;
         inputFim.hidden = true;
-        card.appendChild(inputFim);
+        tdAlterar.appendChild(inputFim);
 
         const botaoGuardar = document.createElement('button');
         botaoGuardar.textContent = 'Guardar';
         botaoGuardar.className = 'botao-principal';
         botaoGuardar.hidden = true;
-        card.appendChild(botaoGuardar);
+        tdAlterar.appendChild(botaoGuardar);
 
-        botaoAlterar.addEventListener('click', async () => {
+        botaoAlterar.addEventListener('click', () => {
             botaoAlterar.hidden = true;
             inputFim.hidden = false;
             botaoGuardar.hidden = false;
@@ -131,17 +153,23 @@ function criarCartaoReserva(reserva) {
         });
     }
 
-    return card
+    return tr;
 }
 
 function desenharReservas(reservas) {
-    const container = document.getElementById('lista-reservas');;
+    const container = document.getElementById('lista-reservas');
     container.innerHTML = '';
 
+    const table = document.createElement('table');
+    table.appendChild(criarCabecalhoTabela());
+
+    const tbody = document.createElement('tbody');
     reservas.forEach(reserva => {
-        const card = criarCartaoReserva(reserva);
-        container.appendChild(card);
+        tbody.appendChild(criarLinhaReserva(reserva));
     });
+    table.appendChild(tbody);
+    
+    container.appendChild(table);
 }
 
 carregarReservas();
