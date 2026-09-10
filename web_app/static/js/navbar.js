@@ -12,11 +12,16 @@ function atualizarNavbar() {
         saudacao.className = 'navbar-saudacao';
         saudacao.textContent = `Olá, ${nome}`;
 
+        const botaoMinhasReservas = document.createElement('a');
+        botaoMinhasReservas.href = 'minhas-reservas.html';
+        botaoMinhasReservas.textContent = 'Minhas Reservas';
+
         const botaoSair = document.createElement('button');
         botaoSair.textContent = 'Sair';
         botaoSair.addEventListener('click', fazerLogout);
 
         botoesContainer.appendChild(saudacao);
+        botoesContainer.appendChild(botaoMinhasReservas)
         botoesContainer.appendChild(botaoSair);
     } else {
         const botaoLogin = document.createElement('a');
