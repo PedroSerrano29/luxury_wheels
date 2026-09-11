@@ -3,6 +3,9 @@ if (!token) {
     window.location.href = `login.html?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
 }
 
+// Todas as reservas do cliente, sem filtro
+let TODAS_AS_RESERVAS = [];
+
 async function carregarReservas() {
     const resultado = await buscarReservas();
 
@@ -12,7 +15,8 @@ async function carregarReservas() {
             return;
         }
 
-    desenharReservas(resultado.dados);
+    TODAS_AS_RESERVAS = resultado.dados;
+    desenharReservas(TODAS_AS_RESERVAS);
 }
 
 // criar funcao para criar cabeçalho da tabela
