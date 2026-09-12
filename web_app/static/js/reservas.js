@@ -16,11 +16,39 @@ async function carregarReservas() {
         }
 
     TODAS_AS_RESERVAS = resultado.dados;
-    desenharReservas(TODAS_AS_RESERVAS);
+    aplicarFiltroReservas();
 }
 
-// criar funcao para criar cabeçalho da tabela
+// Select de filtro por estado, acima da tabela
+function montarFiltroEstado() {
+    const opcoes = [
+        { valor: '', texto: '— Todos —' },
+        { valor: 'Reservada', texto: 'Reservada' },
+        { valor: 'Ativa', texto: 'Ativa' },
+        { valor: 'Concluída', texto: 'Concluída' },
+        { valor: 'Cancelada', texto: 'Cancelada' }
+    ];
 
+    const campo = criarCampoSelect('filtro-estado', 'Estado:', opcoes);
+    document.getElementById('filtro-reservas').appendChild(campo);
+    document.getElementById('filtro-estado').addEventListener('change', aplicarFiltroReservas);
+}
+
+// Por o filtro a funcionar
+function aplicarFiltroReservas() {
+    const estado = document.getElementById('filtro-estado').value;
+
+    if(!estado) {
+        desenharReservas(TODAS_AS_RESERVAS);
+        return;
+    }
+
+    const filtradas = TODAS_AS_RESERVAS.filter(reserva => reserva.estado === estado);
+    desenharReservas(filtradas);
+}
+
+
+// criar funcao para criar cabeçalho da tabela
 function criarCabecalhoTabela() {
     const thead = document.createElement('thead');
     const tr = document.createElement('tr');
@@ -176,4 +204,5 @@ function desenharReservas(reservas) {
     container.appendChild(table);
 }
 
+montarFiltroEstado()
 carregarReservas();
