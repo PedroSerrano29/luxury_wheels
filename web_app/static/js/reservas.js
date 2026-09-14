@@ -47,19 +47,31 @@ function aplicarFiltroReservas() {
     desenharReservas(filtradas);
 }
 
+// Colunas da tabela: título, valor em bruto e formatação opcional
+const COLUNAS = [
+    { titulo: 'Matrícula', valor: reserva => reserva.veiculo.matricula },
+    { titulo: 'Marca', valor: reserva => reserva.veiculo.marca },
+    { titulo: 'Modelo', valor: reserva => reserva.veiculo.modelo },
+    { titulo: 'Data Início', valor: reserva => reserva.data_inicio },
+    { titulo: 'Data Fim', valor: reserva => reserva.data_fim },
+    { titulo: 'Valor Total', valor: reserva => reserva.valor_total, formatar: valor => `${valor}€` },
+    { titulo: 'Estado', valor: reserva => reserva.estado }
+];
 
 // criar funcao para criar cabeçalho da tabela
 function criarCabecalhoTabela() {
     const thead = document.createElement('thead');
     const tr = document.createElement('tr');
 
-    const colunas = ['Matrícula', 'Marca', 'Modelo', 'Data Início', 'Data Fim', 'Valor Total', 'Estado', '', ''];
-
-    colunas.forEach(coluna => {
+    COLUNAS.forEach(coluna => {
         const th = document.createElement('th');
-        th.textContent = coluna;
+        th.textContent = coluna.titulo;
         tr.appendChild(th);
     });
+
+    // Colunas dos botões Alterar e Cancelar
+    tr.appendChild(document.createElement('th'));
+    tr.appendChild(document.createElement('th'));
 
     thead.appendChild(tr);
     return thead;
@@ -70,19 +82,10 @@ function criarCabecalhoTabela() {
 function criarLinhaReserva(reserva) {
     const tr = document.createElement('tr');
 
-    const valores = [
-        reserva.veiculo.matricula,
-        reserva.veiculo.marca,
-        reserva.veiculo.modelo,
-        reserva.data_inicio,
-        reserva.data_fim,
-        `${reserva.valor_total}€`,
-        reserva.estado
-    ];
-
-    valores.forEach(valor => {
+    COLUNAS.forEach(coluna => {
         const td = document.createElement('td');
-        td.textContent = valor;
+        const valor = coluna.valor(reserva);
+        td.textContent = coluna.formatar ? coluna.formatar(valor) : valor;
         tr.appendChild(td);
     });
 
