@@ -81,7 +81,7 @@ def criar_reserva(dados):
 def listar_reserva(dados):
     cliente_id = dados.get('cliente_id')
 
-    reservas = Reserva.query.filter_by(cliente_id=cliente_id).all()
+    reservas = Reserva.query.filter_by(cliente_id=cliente_id).order_by(Reserva.data_inicio.desc(), Reserva.id.desc()).all()
     resultado = [r.to_dict() for r in reservas]
 
     return jsonify(resultado)
