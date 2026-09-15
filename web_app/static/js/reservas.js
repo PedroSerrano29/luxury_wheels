@@ -6,6 +6,9 @@ if (!token) {
 // Todas as reservas do cliente, sem filtro
 let TODAS_AS_RESERVAS = [];
 
+// Coluna e direção da ordenação; coluna null mantém a ordem da API
+let ORDENACAO = { coluna: null, ascendente: true};
+
 async function carregarReservas() {
     const resultado = await buscarReservas();
 
@@ -16,7 +19,7 @@ async function carregarReservas() {
         }
 
     TODAS_AS_RESERVAS = resultado.dados;
-    aplicarFiltroReservas();
+    atualizarTabela();
 }
 
 // Select de filtro por estado, acima da tabela
@@ -31,20 +34,34 @@ function montarFiltroEstado() {
 
     const campo = criarCampoSelect('filtro-estado', 'Estado:', opcoes);
     document.getElementById('filtro-reservas').appendChild(campo);
-    document.getElementById('filtro-estado').addEventListener('change', aplicarFiltroReservas);
+    document.getElementById('filtro-estado').addEventListener('change', atualizarTabela);
 }
 
-// Por o filtro a funcionar
-function aplicarFiltroReservas() {
+function atualizarTabela() {
     const estado = document.getElementById('filtro-estado').value;
 
-    if(!estado) {
-        desenharReservas(TODAS_AS_RESERVAS);
-        return;
+    const filtradas = estado
+        ? TODAS_AS_RESERVAS.filter(reserva => reserva.estado === estado)
+        : TODAS_AS_RESERVAS;
+
+    desenharReservas(ordenarReservas(filtradas));
+}
+
+function ordenarReservas(reservas) {
+    if (!ORDENACAO.coluna) {
+        return reservas;
     }
 
-    const filtradas = TODAS_AS_RESERVAS.filter(reserva => reserva.estado === estado);
-    desenharReservas(filtradas);
+    return [...reservas].sort((a, b) =>{
+        const valorA = ORDENACAO.coluna.valor(a);
+        const valorB = ORDENACAO.coluna.valor(b);
+
+        const comparacao = typeof valorA === 'number'
+            ? valorA - valorB
+            : valorA.localeCompare(valorB, 'pt');
+        
+        return ORDENACAO.ascendente ? comparacao : -comparacao;
+    });
 }
 
 // Colunas da tabela: título, valor em bruto e formatação opcional
