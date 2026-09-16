@@ -82,8 +82,33 @@ function criarCabecalhoTabela() {
 
     COLUNAS.forEach(coluna => {
         const th = document.createElement('th');
-        th.textContent = coluna.titulo;
+        
+        // Botão de ordenar pela coluna
+        const botaoOrdenar = document.createElement('button');
+        botaoOrdenar.className = 'botao-ordenar';
+        botaoOrdenar.textContent = coluna.titulo;
+
+        // Seta e aria-sort só na coluna ordenada
+        if (ORDENACAO.coluna === coluna) {
+            botaoOrdenar.textContent += ORDENACAO.ascendente ? ' ▲' : ' ▼';
+            th.setAttribute('aria-sort', ORDENACAO.ascendente ? 'ascending' : 'descending');
+        }
+
+        botaoOrdenar.addEventListener('click', () => {
+            if (ORDENACAO.coluna !== coluna) {
+                ORDENACAO.coluna = coluna;
+                ORDENACAO.ascendente = true;
+            } else if (ORDENACAO.ascendente) {
+                ORDENACAO.ascendente = false;
+            } else {
+                ORDENACAO.coluna = null;
+            }
+            atualizarTabela();
+        });
+
+        th.appendChild(botaoOrdenar);
         tr.appendChild(th);
+
     });
 
     // Colunas dos botões Alterar e Cancelar
