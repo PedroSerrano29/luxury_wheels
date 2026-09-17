@@ -1,3 +1,19 @@
+// true se o token já expirou ou não se consegue ler
+function tokenExpirado(token) {
+    try {
+        const payloadBase64 = token.split('.')[1].replaceAll('-', '+').replaceAll('_', '/');
+        const payload = JSON.parse(atob(payloadBase64));
+
+        if (typeof payload.exp !== 'number') {
+            return true;
+        }
+
+        return payload.exp * 1000 <= Date.now();
+    } catch (erro) {
+        return true;
+    }
+}
+
 function atualizarNavbar() {
     const token = localStorage.getItem('token');
     const nome = localStorage.getItem('nome');
@@ -37,10 +53,26 @@ function atualizarNavbar() {
     }
 }
 
-function fazerLogout() {
+// Apaga token e nome guardados
+function limparSessao() {
     localStorage.removeItem('token');
     localStorage.removeItem('nome');
-    window.location.href = 'index.html';
 }
 
+function fazerLogout() {
+    limparSessao();
+    window.location.href= 'index.html';
+}
+
+// Limpar a sessão se o token guardado já expirou
+function verificarSessaoExpirada() {
+    const token = localStorage.getItem('token');
+
+    if(token && tokenExpirado(token)) {
+        limparSessao();
+        sessionStorage.setItem('sessaoExpirada', 'sim');
+    }
+}
+
+verificarSessaoExpirada();
 atualizarNavbar();

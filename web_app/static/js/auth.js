@@ -1,5 +1,11 @@
 const formLogin = document.getElementById('form-login');
 if (formLogin) {
+    // Aviso de sessão expirada, deixado pelo navbar.js
+    if (sessionStorage.getItem('sessaoExpirada')) {
+        document.getElementById('login-erro').textContent = 'A sua sessão expirou. Inicie sessão novamente.';
+        sessionStorage.removeItem('sessaoExpirada');
+    }
+
     formLogin.addEventListener('submit', async (evento) => {
         evento.preventDefault();
 
