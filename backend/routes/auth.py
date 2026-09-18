@@ -9,12 +9,12 @@ clientes_bp = Blueprint ('Cliente', __name__)
 ### POST /api/auth/registo ###
 @clientes_bp.route('/api/auth/registo', methods=['POST'])
 def registar_cliente():
-    dados = request.get_json()
+    corpo = request.get_json()
 
-    nome = dados.get('nome')
-    email = dados.get('email')
-    password = dados.get('password')
-    password_confirm = dados.get('password_confirm')
+    nome = corpo.get('nome')
+    email = corpo.get('email')
+    password = corpo.get('password')
+    password_confirm = corpo.get('password_confirm')
 
     # Validar se as passwords coincidem
     if password != password_confirm:
@@ -42,10 +42,10 @@ def registar_cliente():
 
 @clientes_bp.route('/api/auth/login', methods=['POST'])
 def login_cliente():
-    dados =request.get_json()
+    corpo = request.get_json()
 
-    email = dados.get('email')
-    password = dados.get('password')
+    email = corpo.get('email')
+    password = corpo.get('password')
 
     cliente = Cliente.query.filter_by(email=email).first()
     if cliente is None or not check_password_hash(cliente.password_hash, password):
@@ -72,9 +72,9 @@ def login_cliente():
 
 @clientes_bp.route('/api/auth/login-staff', methods=['POST'])
 def login_staff():
-    dados = request.get_json()
-    email = dados.get('email')
-    password = dados.get('password')
+    corpo = request.get_json()
+    email = corpo.get('email')
+    password = corpo.get('password')
 
     utilizador = Utilizador.query.filter_by(email=email).first()
 
