@@ -57,7 +57,8 @@ function criarPainelFiltros() {
 }
 
 function ativarFiltragemAutomatica() {
-    const campos = ['filtro-tipo', 'filtro-categoria', 'filtro-transmissao', 'filtro-valor-maximo', 'filtro-capacidade'];
+    // filtro-tipo tem listener próprio, mais abaixo
+    const campos = ['filtro-categoria', 'filtro-transmissao', 'filtro-valor-maximo', 'filtro-capacidade'];
 
     campos.forEach(id => {
         document.getElementById(id).addEventListener('change', aplicarFiltro);
