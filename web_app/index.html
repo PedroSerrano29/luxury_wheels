@@ -28,11 +28,17 @@
         <script src="static/js/navbar.js"></script>
         <script>
             async function iniciar() {
-                await carregarOpcoesFiltro()
-                document.getElementById('painel-filtros').appendChild(criarPainelFiltros());
-                ativarFiltragemAutomatica();
-                atualizarOpcoesCategoria();
-                carregarVeiculos();
+                try {
+                    await carregarOpcoesFiltro();
+                    document.getElementById('painel-filtros').appendChild(criarPainelFiltros());
+                    ativarFiltragemAutomatica();
+                    atualizarOpcoesCategoria();
+                    await carregarVeiculos();
+                } catch (erro) {
+                    console.error('Erro ao iniciar a página:', erro);
+                    mostrarErroLigacao();
+                }
+
             }
             iniciar();
         </script>
