@@ -37,3 +37,20 @@ function criarCampoSelect(id, label, opcoes) {
 
     return container;
 }
+
+// Mensagem quando a API não responde, dentro do container indicado
+function mostrarErroLigacao(idContainer) {
+    const container = document.getElementById(idContainer);
+    container.innerHTML = '';
+
+    const mensagem = document.createElement('p');
+    mensagem.textContent = 'Não foi possível ligar ao servidor. Por favor, tente novamente.';
+
+    const botaoTentar = document.createElement('button');
+    botaoTentar.textContent = 'Tentar novamente';
+    botaoTentar.className = 'botao-principal';
+    botaoTentar.addEventListener('click', () => location.reload());
+
+    container.appendChild(mensagem);
+    container.appendChild(botaoTentar);
+}

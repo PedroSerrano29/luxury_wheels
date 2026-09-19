@@ -42,20 +42,3 @@ async function carregarVeiculos() {
     const resultado = await buscarVeiculos();
     desenharVeiculos(resultado.dados);
 }
-
-// Mensagem quando a API não responde
-function mostrarErroLigacao() {
-    const container = document.getElementById('lista-veiculos');
-    container.innerHTML = '';
-
-    const mensagem = document.createElement('p');
-    mensagem.textContent = 'Não foi possível ligar ao servidor. Por favor, tente novamente.';
-
-    const botaoTentar = document.createElement('button');
-    botaoTentar.textContent = 'Tentar novamente';
-    botaoTentar.className = 'botao-principal';
-    botaoTentar.addEventListener('click', () => location.reload());
-
-    container.appendChild(mensagem);
-    container.appendChild(botaoTentar);
-}
