@@ -150,4 +150,7 @@ async function carregarDetalheVeiculo() {
     montarPainelReserva(veiculo);
 }
 
-carregarDetalheVeiculo()
+carregarDetalheVeiculo().catch(erro => {
+    console.error('Erro ao carregar o veículo:', erro);
+    mostrarErroLigacao('info-veiculo');
+});
