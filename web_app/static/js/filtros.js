@@ -105,10 +105,16 @@ async function aplicarFiltro() {
     if (valorMaximo) params.append('valor_maximo', valorMaximo);
     if (capacidade) params.append('capacidade_pessoas', capacidade);
 
-    const resposta = await fetch(`http://127.0.0.1:5000/api/veiculos?${params.toString()}`);
-    const veiculos = await resposta.json();
+    try{
+        const resposta = await fetch(`http://127.0.0.1:5000/api/veiculos?${params.toString()}`);
+        const veiculos = await resposta.json();
 
-    desenharVeiculos(veiculos);
+        desenharVeiculos(veiculos);
+    } catch (erro) {
+        console.error('Erro ao aplicar o filtro:', erro);
+        mostrarErroLigacao('lista-veiculos');
+    }
+
 }
 
 function atualizarOpcoesCategoria() {
