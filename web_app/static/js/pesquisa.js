@@ -39,8 +39,8 @@ function desenharVeiculos(veiculos) {
 
 
 async function carregarVeiculos() {
-    const veiculos = await buscarVeiculos();
-    desenharVeiculos(veiculos);
+    const resultado = await buscarVeiculos();
+    desenharVeiculos(resultado.dados);
 }
 
 // Mensagem quando a API não responde

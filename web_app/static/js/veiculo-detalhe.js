@@ -116,11 +116,21 @@ function montarPainelReserva(veiculo) {
 }
 
 async function carregarDetalheVeiculo() {
-    const id =obterIdDoURL();
-    const veiculo = await buscarVeiculo(id);
+    const id = obterIdDoURL();
+    const resultado = await buscarVeiculo(id);
     
     const container = document.getElementById('info-veiculo');
     container.innerHTML = '';
+
+    // Veiculo que não existe (404)
+    if (!resultado.ok) {
+        const mensagem = document.createElement('p');
+        mensagem.textContent = resultado.dados.erro;
+        container.appendChild(mensagem);
+        return;
+    }
+
+    const veiculo = resultado.dados;
 
     const titulo = document.createElement('h1');
     titulo.textContent = `${veiculo.marca} ${veiculo.modelo}`;

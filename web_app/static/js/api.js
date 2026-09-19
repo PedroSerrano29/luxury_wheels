@@ -1,11 +1,8 @@
 async function buscarVeiculos() {
-    try {
-        const resposta = await fetch('http://127.0.0.1:5000/api/veiculos');
-        const dados = await resposta.json();
-        return dados;
-    } catch (erro) {
-        console.error('Erro:', erro);
-    }
+    const resposta = await fetch('http://127.0.0.1:5000/api/veiculos');
+    const dados = await resposta.json();
+    
+    return { ok: resposta.ok, dados: dados };
 }
 
 async function loginCliente(email, password) {
@@ -33,13 +30,10 @@ async function registarCliente(nome, email, password, passwordConfirm) {
 }
 
 async function buscarVeiculo(id) {
-    try {
-        const resposta = await fetch(`http://127.0.0.1:5000/api/veiculos/${id}`);
-        const dados = await resposta.json();
-        return dados;
-    } catch (erro) {
-        console.error('Erro:', erro);
-    }
+    const resposta = await fetch(`http://127.0.0.1:5000/api/veiculos/${id}`);
+    const dados = await resposta.json();
+    
+    return { ok: resposta.ok, dados: dados };
 }
 
 async function criarReserva(veiculoId, dataInicio, dataFim, formaPagamentoTipo) {
