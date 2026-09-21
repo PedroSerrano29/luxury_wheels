@@ -13,6 +13,8 @@ function criarPainelFiltros() {
     titulo.textContent = 'Filtrar';
     painel.appendChild(titulo);
 
+    const campoPesquisa = criarCampoInput('filtro-pesquisa', 'Marca ou modelo:', 'Ex: BMW', 'text');
+    painel.appendChild(campoPesquisa);
 
     const opcoesTipo = [
         { valor: '', texto: '— Todos —' },
@@ -27,7 +29,7 @@ function criarPainelFiltros() {
     ]);
     painel.appendChild(campoCategoria);
 
-    const campoValorMaximo = criarCampoNumero('filtro-valor-maximo', 'Valor máximo/dia (€): ', 'Ex: 80');
+    const campoValorMaximo = criarCampoInput('filtro-valor-maximo', 'Valor máximo/dia (€): ', 'Ex: 80');
     painel.appendChild(campoValorMaximo);
 
     const opcoesTransmissao = [
@@ -58,7 +60,7 @@ function criarPainelFiltros() {
 
 function ativarFiltragemAutomatica() {
     // filtro-tipo tem listener próprio, mais abaixo
-    const campos = ['filtro-categoria', 'filtro-transmissao', 'filtro-valor-maximo', 'filtro-capacidade'];
+    const campos = ['filtro-pesquisa','filtro-categoria', 'filtro-transmissao', 'filtro-valor-maximo', 'filtro-capacidade'];
 
     campos.forEach(id => {
         document.getElementById(id).addEventListener('change', aplicarFiltro);
@@ -70,7 +72,7 @@ function ativarFiltragemAutomatica() {
     });
 }
 
-function criarCampoNumero(id, label, placeholder) {
+function criarCampoInput(id, label, placeholder, tipo) {
     const container = document.createElement('div');
     container.className = 'campo-filtro';
 
@@ -79,10 +81,14 @@ function criarCampoNumero(id, label, placeholder) {
     rotulo.textContent = label;
 
     const input = document.createElement('input');
-    input.type = 'number';
+    input.type = tipo;
     input.id = id;
-    input.min = '0';
     input.placeholder = placeholder;
+
+    // Só os campos númericos têm nínimo
+    if (tipo === 'number') {
+        input.min = '0';
+    }
 
     container.appendChild(rotulo);
     container.appendChild(input);
@@ -91,6 +97,7 @@ function criarCampoNumero(id, label, placeholder) {
 }
 
 async function aplicarFiltro() {
+    const pesquisa = document.getElementById('filtro-pesquisa').value;
     const tipo = document.getElementById('filtro-tipo').value;
     const categoria = document.getElementById('filtro-categoria').value;
     const transmissao = document.getElementById('filtro-transmissao').value;
@@ -99,6 +106,7 @@ async function aplicarFiltro() {
 
     const params = new URLSearchParams();
 
+    if (pesquisa) params.append('pesquisa', pesquisa);
     if (tipo) params.append('tipo', tipo);
     if (categoria) params.append('categoria', categoria);
     if (transmissao) params.append('transmissao', transmissao);

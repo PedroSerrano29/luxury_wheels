@@ -17,6 +17,10 @@ veiculos_bp = Blueprint('veiculos', __name__)
 def listar_veiculos():
     query = Veiculo.query
 
+    # Pesquisa por marca ou modelo (ex. "bmw", "series", "bmw series 3")
+    if pesquisa := request.args.get('pesquisa', '').strip():
+        query = query.filter((Veiculo.marca + ' ' + Veiculo.modelo).ilike(f'%{pesquisa}%'))
+
     categoria = request.args.get('categoria')
     if categoria:
         query = query.filter_by(categoria=categoria)
