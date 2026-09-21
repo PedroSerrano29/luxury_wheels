@@ -32,7 +32,11 @@ def listar_veiculos():
         query = query.filter_by(transmissao=transmissao)
 
     if valor_maximo := request.args.get('valor_maximo'):
-        query = query.filter(Veiculo.valor_diaria <= float(valor_maximo))    
+        try:
+            valor_maximo = float(valor_maximo)
+        except ValueError:
+            return jsonify({"erro": "Valor máximo inválido"}), 400
+        query = query.filter(Veiculo.valor_diaria <= valor_maximo)    
 
     grupo_capacidade = request.args.get('capacidade_pessoas')
     if grupo_capacidade:
