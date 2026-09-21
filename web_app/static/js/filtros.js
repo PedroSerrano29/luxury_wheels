@@ -29,7 +29,7 @@ function criarPainelFiltros() {
     ]);
     painel.appendChild(campoCategoria);
 
-    const campoValorMaximo = criarCampoInput('filtro-valor-maximo', 'Valor máximo/dia (€): ', 'Ex: 80');
+    const campoValorMaximo = criarCampoInput('filtro-valor-maximo', 'Valor máximo/dia (€): ', 'Ex: 80', 'number');
     painel.appendChild(campoValorMaximo);
 
     const opcoesTransmissao = [
