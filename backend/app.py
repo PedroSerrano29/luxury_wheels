@@ -6,9 +6,9 @@ from routes.auth import clientes_bp
 from routes.reservas import reserva_bd
 from flask_cors import CORS
 
-def create_app():
+def create_app(config=Config):
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config)
 
     CORS(app)
 
