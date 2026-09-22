@@ -1,6 +1,8 @@
+from datetime import date
 from flask import Blueprint, jsonify, request
 from models import db, Veiculo, Reserva
-from auth_utils import token_obrigatorio  
+from auth_utils import token_obrigatorio
+from services.veiculos_service import motivo_indisponibilidade, veiculo_disponivel_para_aluguer
 
 GRUPO_CAPACIDADE = {
         "1-4": (1, 4),
@@ -46,7 +48,9 @@ def listar_veiculos():
         if maximo is not None:
             query = query.filter(Veiculo.capacidade_pessoas <= maximo)
 
-    veiculos = query.all()
+    # Só mostra ao cliente os veículos que cumprem a regra de disponibilidade
+    hoje = date.today()
+    veiculos = [v for v in query.all() if veiculo_disponivel_para_aluguer(v, hoje)]
     resultado = [v.to_dict() for v in veiculos]
     return jsonify(resultado)
 
@@ -79,7 +83,9 @@ def obter_veiculo(veiculo_id):
     if v is None:
         return jsonify({"erro": "Veículo não encontrado"}), 404
 
-    return jsonify(v.to_dict())
+    resultado = v.to_dict()
+    resultado['motivo_indisponibilidade'] = motivo_indisponibilidade(v, date.today())
+    return jsonify(resultado)
 
 ### Funções para a gestão de frotas de veículos ###
 
