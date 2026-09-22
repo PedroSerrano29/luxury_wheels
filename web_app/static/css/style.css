@@ -105,6 +105,17 @@ body {
     padding: 0 30px;
 }
 
+/* Títulos e conteúdo das páginas alinhados com o resto do layout */
+body > h1,
+#filtro-reservas,
+.lista-reservas {
+    padding: 0 30px;
+}
+
+#filtro-reservas .campo-filtro {
+    max-width: 250px;
+}
+
 .filtros {
     background-color: white;
     border: 1px solid var(--cinza-borda);
@@ -212,6 +223,11 @@ body {
     border-bottom: 2px solid var(--dourado);
     padding-bottom: 8px;
     margin-top: 0;
+}
+
+.mensagem-indisponivel {
+    color: #a33;
+    font-weight: bold;
 }
 
 .botao-principal {
