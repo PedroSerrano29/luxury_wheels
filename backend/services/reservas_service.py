@@ -1,5 +1,6 @@
-from datetime import datetime as dt
+from datetime import date, datetime as dt
 from models import Reserva, Veiculo
+from services.veiculos_service import motivo_indisponibilidade
 
 class ErroReserva(Exception):
     def __init__(self, mensagem, status_code=400):
@@ -59,13 +60,20 @@ def calcular_orcamento_reserva(
         data_fim
     )
 
+    if data_inicio_obj < date.today():
+        raise ErroReserva(
+            'A data de início não pode ser anterior a hoje.'
+        )
+
     veiculo =Veiculo.query.get(veiculo_id)
     if veiculo is None:
         raise ErroReserva('Veículo não encontrado.', 404)
 
-    if not veiculo.ativo or veiculo.em_manutencao:
+    # Inativo, em manutenção, inspeção fora de validade ou revisão em atraso
+    motivo = motivo_indisponibilidade(veiculo, date.today())
+    if motivo:
         raise ErroReserva(
-            'Veículo não está disponível para aluguer.',
+            f'Veículo indisponível para aluguer: {motivo}',
             409
         )
 

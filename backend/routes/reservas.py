@@ -4,12 +4,34 @@ from models import db, Reserva, Veiculo
 from auth_utils import token_obrigatorio
 from services.reservas_service import (
     ErroReserva,
+    calcular_orcamento_reserva,
     validar_datas_reserva,
     veiculo_disponivel_no_periodo
 )
 from services.pagamentos_service import obter_ou_criar_forma_pagamento
 
 reserva_bd = Blueprint('Reserva', __name__)
+
+FORMAS_PAGAMENTO = ('Cartão', 'MB Way')
+
+### GET /api/reservas/orcamento ### - Valor total antes de reservar
+
+@reserva_bd.route('/api/reservas/orcamento', methods=['GET'])
+def orcamento_reserva():
+    try:
+        orcamento = calcular_orcamento_reserva(
+            request.args.get('veiculo_id', type=int),
+            request.args.get('data_inicio'),
+            request.args.get('data_fim')
+        )
+    except ErroReserva as erro:
+        return jsonify({"erro": erro.mensagem}), erro.status_code
+
+    return jsonify({
+        "numero_dias": orcamento['numero_dias'],
+        "valor_diaria": orcamento['valor_diaria'],
+        "valor_total": orcamento['valor_total']
+    })
 
 ### POST /api/reservas ### - Fazer reserva
 
@@ -24,36 +46,19 @@ def criar_reserva(dados):
     data_fim = corpo.get('data_fim')
     forma_pagamento_tipo = corpo.get('forma_pagamento_tipo')
 
-    veiculo = Veiculo.query.get(veiculo_id)
-    if veiculo is None:
-        return jsonify({"erro": "Veículo não encontrado"}), 404
+    if forma_pagamento_tipo not in FORMAS_PAGAMENTO:
+        return jsonify({"erro": "Forma de pagamento inválida"}), 400
 
-    if not veiculo.ativo or veiculo.em_manutencao:
-        return jsonify({
-            "erro": "Veículo não está disponivel para aluguer"
-            }), 409
-
+    # Datas, disponibilidade do veículo, sobreposição e valor total, num só sítio
     try:
-        data_inicio_obj, data_fim_obj = validar_datas_reserva(
-            data_inicio,
-            data_fim
-        )
+        orcamento = calcular_orcamento_reserva(veiculo_id, data_inicio, data_fim)
     except ErroReserva as erro:
         return jsonify({"erro": erro.mensagem}), erro.status_code
 
-    if not veiculo_disponivel_no_periodo(
-        veiculo_id,
-        data_inicio_obj,
-        data_fim_obj
-    ):
-        return jsonify({
-            "erro" :"Veículo ja tem uma reserva para essas datas"
-        }), 409
+    veiculo = orcamento['veiculo']
+    valor_total = orcamento['valor_total']
 
     forma = obter_ou_criar_forma_pagamento(cliente_id, forma_pagamento_tipo)
-
-    numero_dias = (data_fim_obj - data_inicio_obj).days
-    valor_total = veiculo.valor_diaria * numero_dias
 
     nova_reserva = Reserva(
         cliente_id=cliente_id,
