@@ -31,6 +31,13 @@ function desenharVeiculos(veiculos) {
     const container = document.getElementById('lista-veiculos');;
     container.innerHTML = '';
 
+    if (veiculos.length === 0) {
+        const mensagem = document.createElement('p');
+        mensagem.textContent = 'Nenhum veículo encontrado com estes critérios.';
+        container.appendChild(mensagem);
+        return;
+    }
+
     veiculos.forEach(veiculo => {
         const card = criarCartaoVeiculo(veiculo);
         container.appendChild(card);
