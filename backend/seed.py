@@ -47,6 +47,13 @@ def mapear_disponivel(disponivel_original):
     return disponivel_original == 'TRUE'
 
 with app.app_context():
+    # Cria as tabelas a partir dos modelos, se ainda não existirem
+    db.create_all()
+
+    if Veiculo.query.count() > 0:
+        print(f"A base de dados já tem {Veiculo.query.count()} veículos. Nada a importar.")
+        raise SystemExit
+
     with open(CSV_PATH, newline='', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for linha in reader:
