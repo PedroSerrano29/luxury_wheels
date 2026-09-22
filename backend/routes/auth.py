@@ -16,6 +16,16 @@ def registar_cliente():
     password = corpo.get('password')
     password_confirm = corpo.get('password_confirm')
 
+    # Validar campos obrigatórios (a API pode ser chamada sem o formulário)
+    if not nome or not nome.strip() or not email or not email.strip() or not password:
+        return jsonify({"erro": "Nome, email e password são obrigatórios"}), 400
+
+    if '@' not in email:
+        return jsonify({"erro": "Email inválido"}), 400
+
+    if len(password) < 6:
+        return jsonify({"erro": "A password deve ter pelo menos 6 caracteres"}), 400
+
     # Validar se as passwords coincidem
     if password != password_confirm:
         return jsonify({"erro": "As passwords não coincidem"}), 400
