@@ -8,6 +8,20 @@ function montarPainelReserva(veiculo) {
     const painel = document.getElementById('painel-reserva');
     painel.innerHTML = '';
 
+    // Veículo indisponível (inspeção, revisão, manutenção): a API diz o motivo
+    if (veiculo.motivo_indisponibilidade) {
+        const titulo = document.createElement('h2');
+        titulo.textContent = 'Indisponível';
+
+        const mensagem = document.createElement('p');
+        mensagem.className = 'mensagem-indisponivel';
+        mensagem.textContent = `Este veículo não está disponível para aluguer: ${veiculo.motivo_indisponibilidade}`;
+
+        painel.appendChild(titulo);
+        painel.appendChild(mensagem);
+        return;
+    }
+
     const token = localStorage.getItem('token');
 
     if (!token) {
@@ -76,17 +90,26 @@ function montarPainelReserva(veiculo) {
     totalReserva.id = 'reserva-total';
     painel.appendChild(totalReserva);
 
-    function atualizarTotal() {
-        const inicio = new Date(inputInicio.value);
-        const fim = new Date(inputFim.value)
-        const numeroDias = (fim - inicio) / (1000 * 60 * 60 * 24); // ms → segundos → minutos → horas → dias
-
-        if (numeroDias > 0) {
-            totalReserva.textContent = `Total: ${numeroDias * veiculo.valor_diaria}€`;
-        } else {
+    // O cálculo é feito pela API; aqui só se mostra o resultado
+    async function atualizarTotal() {
+        if (!inputInicio.value || !inputFim.value) {
             totalReserva.textContent = '';
+            return;
         }
-        
+
+        try {
+            const resultado = await calcularOrcamento(veiculo.id, inputInicio.value, inputFim.value);
+
+            if (!resultado.ok) {
+                totalReserva.textContent = resultado.dados.erro;
+            } else {
+                const orcamento = resultado.dados;
+                totalReserva.textContent = `Total: ${orcamento.valor_total}€ (${orcamento.numero_dias} dias × ${orcamento.valor_diaria}€)`;
+            }
+        } catch (erro) {
+            console.error('Erro ao calcular o total:', erro);
+            totalReserva.textContent = 'Não foi possível calcular o total.';
+        }
     }
     inputInicio.addEventListener('change', atualizarTotal);
     inputFim.addEventListener('change', atualizarTotal);
@@ -110,7 +133,12 @@ function montarPainelReserva(veiculo) {
         if (!resultado.ok) {
             mensagemReserva.textContent = resultado.dados.erro;
         } else {
-             mensagemReserva.textContent = "Reserva criada com sucesso!";
+            mensagemReserva.textContent = `Reserva criada com sucesso! Valor total: ${resultado.dados.valor_total}€. `;
+
+            const linkReservas = document.createElement('a');
+            linkReservas.href = 'minhas-reservas.html';
+            linkReservas.textContent = 'Ver as minhas reservas';
+            mensagemReserva.appendChild(linkReservas);
         }
     });
 }

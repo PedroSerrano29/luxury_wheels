@@ -36,6 +36,15 @@ async function buscarVeiculo(id) {
     return { ok: resposta.ok, dados: dados };
 }
 
+// Valor total calculado pela API, antes de confirmar a reserva
+async function calcularOrcamento(veiculoId, dataInicio, dataFim) {
+    const params = new URLSearchParams({ veiculo_id: veiculoId, data_inicio: dataInicio, data_fim: dataFim });
+    const resposta = await fetch(`http://127.0.0.1:5000/api/reservas/orcamento?${params.toString()}`);
+    const dados = await resposta.json();
+
+    return { ok: resposta.ok, dados: dados };
+}
+
 async function criarReserva(veiculoId, dataInicio, dataFim, formaPagamentoTipo) {
     const resposta =await fetch('http://127.0.0.1:5000/api/reservas', {
         method: 'POST',
